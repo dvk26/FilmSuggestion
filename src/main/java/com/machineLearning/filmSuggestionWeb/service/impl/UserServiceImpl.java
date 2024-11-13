@@ -90,4 +90,9 @@ public class UserServiceImpl implements UserService {
 
     }
 
+    @Override
+    public UserEntity findByRefreshTokenAndUserName(String refreshToken, String userName) {
+        return userRepository.findByRefreshTokenAndUserName(refreshToken,userName);
+    }
+
 }

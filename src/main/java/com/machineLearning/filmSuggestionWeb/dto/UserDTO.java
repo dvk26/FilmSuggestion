@@ -27,6 +27,5 @@ public class UserDTO {
     private GenderEnum gender;
     private Long age;
     private String address;
-    @NotNull
     private String roleCode;
 }

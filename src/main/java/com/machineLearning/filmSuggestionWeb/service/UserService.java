@@ -13,4 +13,5 @@ public interface UserService {
     public UserEntity findByUserName(String username);
 
     public void updateUserToken(String token, String userName);
+    public UserEntity findByRefreshTokenAndUserName(String refreshToken, String userName);
 }
