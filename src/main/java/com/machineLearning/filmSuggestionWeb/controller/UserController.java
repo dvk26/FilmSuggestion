@@ -25,6 +25,7 @@ public class UserController {
     public ResponseEntity<RestResponse> createUser(@Valid @RequestBody UserDTO userDTO){
 
         userService.createUser(userDTO);
+        System.out.println("hello world");
         return ResponseEntity.status(200).body(new RestResponse(200,""," Tạo mới người dùng thành công!",userDTO));
     }
     @PutMapping
