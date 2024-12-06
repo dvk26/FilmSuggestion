@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.machineLearning.filmSuggestionWeb.dto.response.FilmDTO;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
@@ -20,32 +21,31 @@ import com.machineLearning.filmSuggestionWeb.service.HistoryFilmService;
 @Service
 public class HistoryFilmServiceImpl implements HistoryFilmService {
     
-    private final HistoryFilmRepository listFilmSearchedRepository;
+    private final HistoryFilmRepository historyFilmRepository;
     private final FilmRepository filmRepository;
 
-    public HistoryFilmServiceImpl(HistoryFilmRepository listFilmSearchedRepository, FilmRepository filmRepository) {
-        this.listFilmSearchedRepository = listFilmSearchedRepository;
+    public HistoryFilmServiceImpl( HistoryFilmRepository historyFilmRepository, FilmRepository filmRepository) {
+        this.historyFilmRepository = historyFilmRepository;
+
         this.filmRepository = filmRepository;
     }
 
     @Override
-    public void saveListFilmSearched(HistoryEntity searchEntity, List<FilmEntity> listFilm) {
+    public void saveListFilmSearched(HistoryEntity historyEntity, List<FilmEntity> listFilm) {
       for (FilmEntity filmEntity : listFilm) {
         HistoryFilmEntity entity = new HistoryFilmEntity();
-        entity.setSearch_id(searchEntity);
-        entity.setFilm__id(filmEntity);
-        listFilmSearchedRepository.save(entity);
-        listFilmSearchedRepository.flush();
+        entity.setHistory(historyEntity);
+        entity.setFilm(filmEntity);
+        historyFilmRepository.save(entity);
       }
     }
 
     @Override
-    public List<FilmEntity> getListFilmSearched(HistoryEntity search) {
+    public List<FilmEntity> getListFilmSearched(HistoryEntity history) {
         List<FilmEntity> films = new ArrayList<>();
-        List<HistoryFilmEntity> filmSearcheds = listFilmSearchedRepository.findbySearch_Id(search.getId());
-
-        for (HistoryFilmEntity listFilmSearchedEntity : filmSearcheds) {
-          films.add(listFilmSearchedEntity.getFilm__id());
+        List<HistoryFilmEntity> historyFilms = historyFilmRepository.findByHistory_Id(history.getId());
+        for (HistoryFilmEntity historyFilmEntity : historyFilms) {
+          films.add(historyFilmEntity.getFilm());
         }
         return films;
     }

@@ -2,6 +2,7 @@ package com.machineLearning.filmSuggestionWeb.service;
 
 import java.util.List;
 
+import com.machineLearning.filmSuggestionWeb.dto.response.FilmDTO;
 import com.machineLearning.filmSuggestionWeb.model.FilmEntity;
 import com.machineLearning.filmSuggestionWeb.model.HistoryEntity;
 

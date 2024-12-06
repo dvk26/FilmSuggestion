@@ -9,15 +9,15 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name="HistorySearch")
+@Table(name="history_film")
 public class HistoryFilmEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name="history")
+    @JoinColumn(name="history_id")
     private HistoryEntity history;
     @ManyToOne
-    @JoinColumn(name="film")
+    @JoinColumn(name="film_id")
     private FilmEntity film;
 }

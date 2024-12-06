@@ -1,6 +1,7 @@
 package com.machineLearning.filmSuggestionWeb.model;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import jakarta.persistence.*;
 import lombok.Getter;
@@ -17,11 +18,11 @@ public class HistoryEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne
-    @JoinColumn(name="user")
+    @JoinColumn(name="user_id")
     private UserEntity user;
-    private String promptSearch;
-    private LocalDateTime dateSearch;
+    private String prompt;
+    private LocalDateTime date;
 
     @OneToMany(mappedBy="history")
-    List<HistoryFilmEntity> historyFilm;
+    private List<HistoryFilmEntity> historyFilm;
 }

@@ -8,6 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface HistoryFilmRepository extends JpaRepository<HistoryFilmEntity, Long>{
     
-    public boolean existsBySearch_IdAndFilm_Id(Long searchId, Long FilmId);
-    public List<HistoryFilmEntity> findbySearch_Id(Long searchId);
+    public boolean existsByHistory_IdAndFilm_Id(Long historyId, Long filmId);
+    public List<HistoryFilmEntity> findByHistory_Id(Long historyId);
 }

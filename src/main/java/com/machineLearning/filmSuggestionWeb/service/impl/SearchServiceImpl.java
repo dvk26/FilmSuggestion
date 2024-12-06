@@ -8,6 +8,7 @@ import com.machineLearning.filmSuggestionWeb.model.HistoryFilmEntity;
 import com.machineLearning.filmSuggestionWeb.model.UserEntity;
 import com.machineLearning.filmSuggestionWeb.service.FilmService;
 import com.machineLearning.filmSuggestionWeb.service.HistoryFilmService;
+import com.machineLearning.filmSuggestionWeb.service.HistoryService;
 import com.machineLearning.filmSuggestionWeb.service.SearchService;
 import com.machineLearning.filmSuggestionWeb.repository.HistoryRepository;
 import com.machineLearning.filmSuggestionWeb.repository.UserRepository;
@@ -31,18 +32,23 @@ public class SearchServiceImpl implements SearchService {
 
     private final ResponseToJsonUtil responseToJsonUtil;
     private final FilmService filmService;
-    private final HistoryRepository historySearchRepository;
+    private final HistoryService historyService;
     private final UserRepository userRepository;
-    private final HistoryFilmService listFilmSearchedService;
 
-    public SearchServiceImpl(SecurityUtil securityUtil, ResponseToJsonUtil responseToJsonUtil, FilmService filmService, 
-              HistoryRepository historySearchRepository, UserRepository userRepository, HistoryFilmService listFilmSearchedService) {
+    private final HistoryFilmService historyFilmService;
+
+
+    public SearchServiceImpl(ResponseToJsonUtil responseToJsonUtil, FilmService filmService, HistoryService historyService, UserRepository userRepository, HistoryFilmService historyFilmService) {
         this.responseToJsonUtil = responseToJsonUtil;
         this.filmService = filmService;
-        this.historySearchRepository = historySearchRepository;
+        this.historyService = historyService;
+
+
+
         this.userRepository = userRepository;
-        this.listFilmSearchedService = listFilmSearchedService;
+        this.historyFilmService = historyFilmService;
     }
+
 
     @Override
     public List<FilmEntity> getResponseFromModel(String prompt) {
@@ -88,45 +94,26 @@ public class SearchServiceImpl implements SearchService {
         String userName = SecurityUtil.getCurrentUserLogin().isPresent()?
                 SecurityUtil.getCurrentUserLogin().get(): "";
         UserEntity userLogin= userRepository.findByUserName(userName);
-        if (historySearchRepository.existsByPromptAndUser_Id(prompt, userLogin.getId())) {
-           return listFilmSearchedService.getListFilmSearched(historySearchRepository.findbyPromptAndUser_Id(prompt, userLogin.getId()));
+
+        if (historyService.existsByPromptAndUser_Id(prompt, userLogin.getId())) {
+           return historyFilmService.getListFilmSearched(historyService.findByPromptAndUser_Id(prompt, userLogin.getId()));
         }
 
         List<FilmEntity> films = new ArrayList<>();
         try {
-
             ObjectMapper mapper = new ObjectMapper();
-
             List<Map<String, Object>> movies = mapper.readValue(json, new TypeReference<>() {});
-
-
             for (Map<String, Object> movie : movies) {
                 films.add(filmService.saveFilm(movie));
-
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-    
-        listFilmSearchedService.saveListFilmSearched(saveSearch(prompt, films), films);
+
+        // Save the history and films
+        historyFilmService.saveListFilmSearched(historyService.save(prompt, films), films);
         return films;
     }
 
-    @Override
-    public HistoryEntity saveSearch(String prompt, List<FilmEntity> listFilm) {
-        HistoryEntity searchEntity = new HistoryEntity();
-        searchEntity.setPrompt_search(prompt);
-        searchEntity.setDate_search(LocalDateTime.now());
 
-        String userName = SecurityUtil.getCurrentUserLogin().isPresent()?
-                SecurityUtil.getCurrentUserLogin().get(): "";
-        UserEntity userLogin= userRepository.findByUserName(userName);
-        if (!historySearchRepository.existsByPromptAndUser_Id(prompt, userLogin.getId())) {
-          searchEntity.setUser_id(userLogin);
-          historySearchRepository.save(searchEntity);
-          historySearchRepository.flush();
-          return searchEntity;
-        }
-        return historySearchRepository.findbyPromptAndUser_Id(prompt, userLogin.getId());
-    }
 }

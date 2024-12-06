@@ -8,6 +8,6 @@ import java.util.List;
 public interface SearchService {
 
     public List<FilmEntity> getResponseFromModel(String prompt);
-    public HistoryEntity saveSearch(String prompt, List<FilmEntity> listFilm);
+
     
 }

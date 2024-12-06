@@ -6,11 +6,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name="users")
+@Table(name="films")
 public class FilmEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,5 +30,5 @@ public class FilmEntity {
     private UserEntity user;
 
     @OneToMany(mappedBy = "film")
-    List<HistoryFilmEntity> historyFilm;
+    private List<HistoryFilmEntity> historyFilm;
 }
