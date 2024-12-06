@@ -26,4 +26,7 @@ public class FilmEntity {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
+
+    @OneToMany(mappedBy = "film")
+    List<HistoryFilmEntity> historyFilm;
 }

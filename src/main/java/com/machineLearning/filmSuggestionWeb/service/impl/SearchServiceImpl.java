@@ -3,13 +3,22 @@ package com.machineLearning.filmSuggestionWeb.service.impl;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.machineLearning.filmSuggestionWeb.model.FilmEntity;
+import com.machineLearning.filmSuggestionWeb.model.HistoryEntity;
+import com.machineLearning.filmSuggestionWeb.model.HistoryFilmEntity;
+import com.machineLearning.filmSuggestionWeb.model.UserEntity;
 import com.machineLearning.filmSuggestionWeb.service.FilmService;
+import com.machineLearning.filmSuggestionWeb.service.HistoryFilmService;
 import com.machineLearning.filmSuggestionWeb.service.SearchService;
+import com.machineLearning.filmSuggestionWeb.repository.HistoryRepository;
+import com.machineLearning.filmSuggestionWeb.repository.UserRepository;
 import com.machineLearning.filmSuggestionWeb.util.ResponseToJsonUtil;
+import com.machineLearning.filmSuggestionWeb.util.SecurityUtil;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -22,10 +31,17 @@ public class SearchServiceImpl implements SearchService {
 
     private final ResponseToJsonUtil responseToJsonUtil;
     private final FilmService filmService;
+    private final HistoryRepository historySearchRepository;
+    private final UserRepository userRepository;
+    private final HistoryFilmService listFilmSearchedService;
 
-    public SearchServiceImpl(ResponseToJsonUtil responseToJsonUtil, FilmService filmService) {
+    public SearchServiceImpl(SecurityUtil securityUtil, ResponseToJsonUtil responseToJsonUtil, FilmService filmService, 
+              HistoryRepository historySearchRepository, UserRepository userRepository, HistoryFilmService listFilmSearchedService) {
         this.responseToJsonUtil = responseToJsonUtil;
         this.filmService = filmService;
+        this.historySearchRepository = historySearchRepository;
+        this.userRepository = userRepository;
+        this.listFilmSearchedService = listFilmSearchedService;
     }
 
     @Override
@@ -68,6 +84,14 @@ public class SearchServiceImpl implements SearchService {
                 .block();
 
         String json= responseToJsonUtil.convertResponseToJson(response);
+
+        String userName = SecurityUtil.getCurrentUserLogin().isPresent()?
+                SecurityUtil.getCurrentUserLogin().get(): "";
+        UserEntity userLogin= userRepository.findByUserName(userName);
+        if (historySearchRepository.existsByPromptAndUser_Id(prompt, userLogin.getId())) {
+           return listFilmSearchedService.getListFilmSearched(historySearchRepository.findbyPromptAndUser_Id(prompt, userLogin.getId()));
+        }
+
         List<FilmEntity> films = new ArrayList<>();
         try {
 
@@ -83,6 +107,26 @@ public class SearchServiceImpl implements SearchService {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    
+        listFilmSearchedService.saveListFilmSearched(saveSearch(prompt, films), films);
         return films;
+    }
+
+    @Override
+    public HistoryEntity saveSearch(String prompt, List<FilmEntity> listFilm) {
+        HistoryEntity searchEntity = new HistoryEntity();
+        searchEntity.setPrompt_search(prompt);
+        searchEntity.setDate_search(LocalDateTime.now());
+
+        String userName = SecurityUtil.getCurrentUserLogin().isPresent()?
+                SecurityUtil.getCurrentUserLogin().get(): "";
+        UserEntity userLogin= userRepository.findByUserName(userName);
+        if (!historySearchRepository.existsByPromptAndUser_Id(prompt, userLogin.getId())) {
+          searchEntity.setUser_id(userLogin);
+          historySearchRepository.save(searchEntity);
+          historySearchRepository.flush();
+          return searchEntity;
+        }
+        return historySearchRepository.findbyPromptAndUser_Id(prompt, userLogin.getId());
     }
 }
