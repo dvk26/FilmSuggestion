@@ -1,11 +1,14 @@
 package com.machineLearning.filmSuggestionWeb.service.impl;
 
+import com.machineLearning.filmSuggestionWeb.dto.response.FilmDTO;
 import com.machineLearning.filmSuggestionWeb.model.FilmEntity;
 import com.machineLearning.filmSuggestionWeb.model.UserEntity;
 import com.machineLearning.filmSuggestionWeb.repository.FilmRepository;
 import com.machineLearning.filmSuggestionWeb.repository.UserRepository;
+import com.machineLearning.filmSuggestionWeb.service.FilmPosterService;
 import com.machineLearning.filmSuggestionWeb.service.FilmService;
 import com.machineLearning.filmSuggestionWeb.util.SecurityUtil;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,34 +22,44 @@ public class FilmServiceImpl implements FilmService {
 
     private final UserRepository userRepository;
 
-    public FilmServiceImpl(SecurityUtil securityUtil, FilmRepository filmRepository, UserRepository userRepository) {
+    private final FilmPosterService filmPosterService;
+    private final ModelMapper modelMapper;
+
+    public FilmServiceImpl(SecurityUtil securityUtil, FilmRepository filmRepository, UserRepository userRepository, FilmPosterService filmPosterService, ModelMapper modelMapper) {
 
         this.filmRepository = filmRepository;
         this.userRepository = userRepository;
+        this.filmPosterService = filmPosterService;
+        this.modelMapper = modelMapper;
     }
 
-
     @Override
-    public FilmEntity saveFilm(Map<String, Object> film) {
+    public FilmDTO saveFilm(Map<String, Object> film) {
         FilmEntity filmEntity = new FilmEntity();
         filmEntity.setTitle((String) film.get("title"));
         int year = (int) film.get("year");
         filmEntity.setYear((long) year);
+        int runTime= (int) film.get("runtime");
+        filmEntity.setTime((long) runTime);
         filmEntity.setImdbRating((double) film.get("imdb_rating"));
         filmEntity.setOverview((String) film.get("overview"));
         List<String> genreList = (List<String>) film.get("genres");
-        String genres= genreList.stream().collect(Collectors.joining());
+        String genres= genreList.stream().collect(Collectors.joining(", "));
         filmEntity.setGenres(genres);
-
         String userName = SecurityUtil.getCurrentUserLogin().isPresent()?
                 SecurityUtil.getCurrentUserLogin().get(): "";
         UserEntity userLogin= userRepository.findByUserName(userName);
-        if(filmRepository.existsByTitleAndUser_Id(filmEntity.getTitle(),userLogin.getId())){
+        if(!filmRepository.existsByTitleAndUser_Id(filmEntity.getTitle(),userLogin.getId())){
+            filmEntity.setImageUrl(filmPosterService.getPosterFromTitleAndYear(filmEntity.getTitle(), filmEntity.getYear()));
             filmEntity.setUser(userLogin);
             filmRepository.save(filmEntity);
             filmRepository.flush();
-            return filmEntity;
+            FilmDTO  filmDTO= modelMapper.map(filmEntity,FilmDTO.class);
+            filmDTO.setUserId(userLogin.getId());
+            return filmDTO;
         }
-        return filmRepository.findByTitleAndUser_Id(filmEntity.getTitle(),userLogin.getId());
+        FilmDTO filmDTO= modelMapper.map(filmRepository.findByTitleAndUser_Id(filmEntity.getTitle(),userLogin.getId()),FilmDTO.class);
+        filmDTO.setUserId(userLogin.getId());
+        return filmDTO;
     }
 }

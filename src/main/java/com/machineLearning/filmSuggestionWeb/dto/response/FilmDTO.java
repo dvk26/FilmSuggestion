@@ -1,19 +1,18 @@
-package com.machineLearning.filmSuggestionWeb.model;
+package com.machineLearning.filmSuggestionWeb.dto.response;
 
-
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
+
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name="films")
-public class FilmEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+@AllArgsConstructor
+public class FilmDTO {
     private Long id;
     private String title;
     private String genres;
@@ -24,7 +23,5 @@ public class FilmEntity {
     private Boolean isLiked;
     private Boolean isDisLiked;
     private String imageUrl;
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private UserEntity user;
+    private Long userId;
 }

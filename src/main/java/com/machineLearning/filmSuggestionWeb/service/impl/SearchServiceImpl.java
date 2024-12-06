@@ -1,12 +1,13 @@
 package com.machineLearning.filmSuggestionWeb.service.impl;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.machineLearning.filmSuggestionWeb.dto.response.FilmDTO;
 import com.machineLearning.filmSuggestionWeb.model.FilmEntity;
 import com.machineLearning.filmSuggestionWeb.service.FilmService;
 import com.machineLearning.filmSuggestionWeb.service.SearchService;
 import com.machineLearning.filmSuggestionWeb.util.ResponseToJsonUtil;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
@@ -29,7 +30,7 @@ public class SearchServiceImpl implements SearchService {
     }
 
     @Override
-    public List<FilmEntity> getResponseFromModel(String prompt) {
+    public List<FilmDTO> getResponseFromModel(String prompt) {
         WebClient webClient = WebClient.create();
         String response = webClient.post()
                 .uri(url)
@@ -40,8 +41,8 @@ public class SearchServiceImpl implements SearchService {
                     {
                       "parts": [
                         {
-                          "text": "Gợi ý khoảng 7-8 bộ phim, nếu có nhiều hơn, thì chọn ra 7-8 bộ có điểm số IMDB cao nhất.
-                           - Tên phim (title)
+                          "text": "Gợi ý khoảng 4-5 bộ phim, nếu có nhiều hơn, thì chọn ra 7-8 bộ có điểm số IMDB cao nhất.
+                           - Tên phim (title) - Ví dụ nếu chỉ có tiếng việt thôi thì có định dạng ko bao gồm dấu đóng mở ngoặc \\\"Tên tiếng việt\\\" hoặc nếu vừa có tên ngoại ngữ vừa có tiếng việt thì có định dạng \\\"Tên ngoại ngữ (Tên tiếng việt)\\\"    
                            - Những thể loại của phim (genres) - trả về một list
                            - Năm sản xuất (year) - trả về số nguyên
                            - Điểm số IMDB (imdb_rating) - trả về số thực dương
@@ -54,8 +55,9 @@ public class SearchServiceImpl implements SearchService {
                            \\\"imdb_rating\\\": \\\"...\\\",
                            \\\"runtime\\\": ...,
                            \\\"overview\\\": \\\"....\\\"}
-                           - Trong đó overview: Nội dung giới thiệu tổng quát về câu hỏi của người dùng để biết đang gợi ý những phim gì (khoảng 30 chữ, câu văn phải mạch lạc).
-                           - Dùng danh xưng Miuvie thay cho tôi hoặc chúng tôi.
+                           - Tên phim title nếu chỉ là tiếng việt thì ko có dấu \\\"(\\\" và dấu \\\")\\\".
+                           - Tên phim có tiếng anh và tiếng việt thì theo format \\\"Tên tiếng anh (Tên Tiếng Việt) \\\".
+                           - Trong đó overview: Nội dung giới thiệu tổng quát về nội dung phim có thể tóm tắt nội dung của phim (khoảng 30 chữ, câu văn phải mạch lạc).
                            - Đây là yêu cầu của người dùng: \\\"%s\\\""
                         }
                       ]
@@ -68,10 +70,11 @@ public class SearchServiceImpl implements SearchService {
                 .block();
 
         String json= responseToJsonUtil.convertResponseToJson(response);
-        List<FilmEntity> films = new ArrayList<>();
+        List<FilmDTO> films = new ArrayList<>();
         try {
 
             ObjectMapper mapper = new ObjectMapper();
+            mapper.enable(JsonParser.Feature.ALLOW_COMMENTS);
 
             List<Map<String, Object>> movies = mapper.readValue(json, new TypeReference<>() {});
 
