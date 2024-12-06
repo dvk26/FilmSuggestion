@@ -23,12 +23,13 @@ public class HistoryFilmServiceImpl implements HistoryFilmService {
     
     private final HistoryFilmRepository historyFilmRepository;
     private final FilmRepository filmRepository;
-    private final 
+    private final ModelMapper modelMapper;
 
-    public HistoryFilmServiceImpl( HistoryFilmRepository historyFilmRepository, FilmRepository filmRepository) {
+    public HistoryFilmServiceImpl(HistoryFilmRepository historyFilmRepository, FilmRepository filmRepository, ModelMapper modelMapper) {
         this.historyFilmRepository = historyFilmRepository;
 
         this.filmRepository = filmRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override

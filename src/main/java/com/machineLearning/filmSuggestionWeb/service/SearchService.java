@@ -8,5 +8,5 @@ import java.util.List;
 
 public interface SearchService {
 
-    public List<FilmEntity> getResponseFromModel(String prompt);
+    public List<FilmDTO> getResponseFromModel(String prompt);
 }
