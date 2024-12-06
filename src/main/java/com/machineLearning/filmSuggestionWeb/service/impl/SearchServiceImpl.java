@@ -80,7 +80,6 @@ public class SearchServiceImpl implements SearchService {
 
 
             for (Map<String, Object> movie : movies) {
-
                 films.add(filmService.saveFilm(movie));
 
             }
