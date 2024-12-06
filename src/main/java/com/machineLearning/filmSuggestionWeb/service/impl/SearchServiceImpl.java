@@ -5,12 +5,21 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.machineLearning.filmSuggestionWeb.dto.response.FilmDTO;
 import com.machineLearning.filmSuggestionWeb.model.FilmEntity;
+import com.machineLearning.filmSuggestionWeb.model.HistoryEntity;
+import com.machineLearning.filmSuggestionWeb.model.HistoryFilmEntity;
+import com.machineLearning.filmSuggestionWeb.model.UserEntity;
 import com.machineLearning.filmSuggestionWeb.service.FilmService;
+import com.machineLearning.filmSuggestionWeb.service.HistoryFilmService;
+import com.machineLearning.filmSuggestionWeb.service.HistoryService;
 import com.machineLearning.filmSuggestionWeb.service.SearchService;
+import com.machineLearning.filmSuggestionWeb.repository.HistoryRepository;
+import com.machineLearning.filmSuggestionWeb.repository.UserRepository;
 import com.machineLearning.filmSuggestionWeb.util.ResponseToJsonUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,11 +32,23 @@ public class SearchServiceImpl implements SearchService {
 
     private final ResponseToJsonUtil responseToJsonUtil;
     private final FilmService filmService;
+    private final HistoryService historyService;
+    private final UserRepository userRepository;
 
-    public SearchServiceImpl(ResponseToJsonUtil responseToJsonUtil, FilmService filmService) {
+    private final HistoryFilmService historyFilmService;
+
+
+    public SearchServiceImpl(ResponseToJsonUtil responseToJsonUtil, FilmService filmService, HistoryService historyService, UserRepository userRepository, HistoryFilmService historyFilmService) {
         this.responseToJsonUtil = responseToJsonUtil;
         this.filmService = filmService;
+        this.historyService = historyService;
+
+
+
+        this.userRepository = userRepository;
+        this.historyFilmService = historyFilmService;
     }
+
 
     @Override
     public List<FilmDTO> getResponseFromModel(String prompt) {
@@ -70,22 +91,22 @@ public class SearchServiceImpl implements SearchService {
                 .block();
 
         String json= responseToJsonUtil.convertResponseToJson(response);
-        List<FilmDTO> films = new ArrayList<>();
+        List<FilmEntity> films = new ArrayList<>();
         try {
-
             ObjectMapper mapper = new ObjectMapper();
-            mapper.enable(JsonParser.Feature.ALLOW_COMMENTS);
 
             List<Map<String, Object>> movies = mapper.readValue(json, new TypeReference<>() {});
-
-
             for (Map<String, Object> movie : movies) {
                 films.add(filmService.saveFilm(movie));
-
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        // Save the history and films
+        historyFilmService.saveListFilmSearched(historyService.save(prompt, films), films);
         return films;
     }
+
+
 }

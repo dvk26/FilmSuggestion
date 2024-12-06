@@ -40,5 +40,8 @@ public class UserEntity {
 
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     List<FilmEntity> films;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    List<HistoryEntity> history;
 }
 
