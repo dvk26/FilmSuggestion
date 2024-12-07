@@ -6,7 +6,7 @@ import com.machineLearning.filmSuggestionWeb.model.HistoryEntity;
 import java.util.List;
 
 public interface HistoryService {
-    public HistoryEntity save(String prompt, List<FilmEntity> listFilm);
+    public HistoryEntity save(String prompt);
     public boolean existsByPromptAndUser_Id(String prompt, Long userId);
     public HistoryEntity findByPromptAndUser_Id(String prompt, Long userId);
 }

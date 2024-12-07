@@ -7,5 +7,5 @@ import java.util.List;
 import java.util.Map;
 
 public interface FilmService {
-    public FilmDTO saveFilm(Map<String, Object> film);
+    public FilmEntity saveFilm(Map<String, Object> film);
 }

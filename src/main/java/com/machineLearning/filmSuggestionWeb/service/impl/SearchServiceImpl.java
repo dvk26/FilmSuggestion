@@ -16,6 +16,7 @@ import com.machineLearning.filmSuggestionWeb.repository.HistoryRepository;
 import com.machineLearning.filmSuggestionWeb.repository.UserRepository;
 import com.machineLearning.filmSuggestionWeb.util.ResponseToJsonUtil;
 import com.machineLearning.filmSuggestionWeb.util.SecurityUtil;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -32,23 +33,21 @@ public class SearchServiceImpl implements SearchService {
     String url ="https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyBm1xgORlBqy3TzlKuS70ckKW74AVig-gk";
 
     private final ResponseToJsonUtil responseToJsonUtil;
-    private final SecurityUtil securityUtil;
     private final FilmService filmService;
     private final HistoryService historyService;
+    private final ModelMapper modelMapper;
 
     private final HistoryFilmService historyFilmService;
     private  final  UserRepository userRepository;
 
-
-    public SearchServiceImpl(ResponseToJsonUtil responseToJsonUtil, SecurityUtil securityUtil, FilmService filmService, HistoryService historyService, UserRepository userRepository, HistoryFilmService historyFilmService) {
+    public SearchServiceImpl(ResponseToJsonUtil responseToJsonUtil, FilmService filmService, HistoryService historyService, ModelMapper modelMapper, UserRepository userRepository, HistoryFilmService historyFilmService) {
         this.responseToJsonUtil = responseToJsonUtil;
-        this.securityUtil = securityUtil;
         this.filmService = filmService;
         this.historyService = historyService;
+        this.modelMapper = modelMapper;
         this.userRepository = userRepository;
         this.historyFilmService = historyFilmService;
     }
-
 
     @Override
     public List<FilmDTO> getResponseFromModel(String prompt) {
@@ -75,7 +74,7 @@ public class SearchServiceImpl implements SearchService {
                            - Những thể loại của phim (genres) - trả về một list
                            - Năm sản xuất (year) - trả về số nguyên
                            - Điểm số IMDB (imdb_rating) - trả về số thực dương
-                           - Thời lượng phim (runtime): trả về số nguyên, đơn vị là phút
+                           - Thời lượng phim (runtime): trả về số nguyên, đơn vị là phút 
                            - Tóm tắt nội dung của phim (overview): dễ tả mạch lạc và đầy đủ nội dung phim, không quá 1000 chữ.
                            - Nội dung trả về dưới dạng json
                            {\\\"title\\\": \\\"phim 1\\\",
@@ -99,7 +98,7 @@ public class SearchServiceImpl implements SearchService {
                 .block();
 
         String json= responseToJsonUtil.convertResponseToJson(response);
-        List<FilmDTO> films = new ArrayList<>();
+        List<FilmEntity> films = new ArrayList<>();
         try {
             ObjectMapper mapper = new ObjectMapper();
 
@@ -110,11 +109,13 @@ public class SearchServiceImpl implements SearchService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         // Save the history and films
-        //historyFilmService.saveListFilmSearched(historyService.save(prompt), films);
-        return films;
+        historyFilmService.saveListFilmSearched(historyService.save(prompt), films);
+        return films.stream().map(s->{
+            FilmDTO filmDTO = modelMapper.map(s,FilmDTO.class);
+            filmDTO.setUserId(userLogin.getId());
+            return filmDTO;
+        }).toList();
+
     }
-
-
 }

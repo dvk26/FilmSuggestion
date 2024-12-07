@@ -24,7 +24,7 @@ public class HistoryServiceImpl implements HistoryService {
     }
 
     @Override
-    public HistoryEntity save(String prompt, List<FilmEntity> listFilm) {
+    public HistoryEntity save(String prompt) {
         HistoryEntity history = new HistoryEntity();
         history.setPrompt(prompt);
         history.setDate(LocalDateTime.now());
