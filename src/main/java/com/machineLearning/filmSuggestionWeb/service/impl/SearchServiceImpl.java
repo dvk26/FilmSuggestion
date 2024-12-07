@@ -112,7 +112,7 @@ public class SearchServiceImpl implements SearchService {
         }
 
         // Save the history and films
-        //historyFilmService.saveListFilmSearched(historyService.save(prompt, films), films);
+        //historyFilmService.saveListFilmSearched(historyService.save(prompt), films);
         return films;
     }
 
