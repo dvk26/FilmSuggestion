@@ -5,12 +5,23 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.machineLearning.filmSuggestionWeb.dto.response.FilmDTO;
 import com.machineLearning.filmSuggestionWeb.model.FilmEntity;
+import com.machineLearning.filmSuggestionWeb.model.HistoryEntity;
+import com.machineLearning.filmSuggestionWeb.model.HistoryFilmEntity;
+import com.machineLearning.filmSuggestionWeb.model.UserEntity;
 import com.machineLearning.filmSuggestionWeb.service.FilmService;
+import com.machineLearning.filmSuggestionWeb.service.HistoryFilmService;
+import com.machineLearning.filmSuggestionWeb.service.HistoryService;
 import com.machineLearning.filmSuggestionWeb.service.SearchService;
+import com.machineLearning.filmSuggestionWeb.repository.HistoryRepository;
+import com.machineLearning.filmSuggestionWeb.repository.UserRepository;
 import com.machineLearning.filmSuggestionWeb.util.ResponseToJsonUtil;
+import com.machineLearning.filmSuggestionWeb.util.SecurityUtil;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -23,14 +34,31 @@ public class SearchServiceImpl implements SearchService {
 
     private final ResponseToJsonUtil responseToJsonUtil;
     private final FilmService filmService;
+    private final HistoryService historyService;
+    private final ModelMapper modelMapper;
 
-    public SearchServiceImpl(ResponseToJsonUtil responseToJsonUtil, FilmService filmService) {
+    private final HistoryFilmService historyFilmService;
+    private  final  UserRepository userRepository;
+
+    public SearchServiceImpl(ResponseToJsonUtil responseToJsonUtil, FilmService filmService, HistoryService historyService, ModelMapper modelMapper, UserRepository userRepository, HistoryFilmService historyFilmService) {
         this.responseToJsonUtil = responseToJsonUtil;
         this.filmService = filmService;
+        this.historyService = historyService;
+        this.modelMapper = modelMapper;
+        this.userRepository = userRepository;
+        this.historyFilmService = historyFilmService;
     }
 
     @Override
     public List<FilmDTO> getResponseFromModel(String prompt) {
+
+        String userName = SecurityUtil.getCurrentUserLogin().isPresent()?
+                SecurityUtil.getCurrentUserLogin().get(): "";
+        UserEntity userLogin = userRepository.findByUserName(userName);
+        if(historyService.existsByPromptAndUser_Id(prompt,userLogin.getId())){
+            return historyFilmService.getListFilmSearched(historyService.findByPromptAndUser_Id(prompt,userLogin.getId()));
+        }
+
         WebClient webClient = WebClient.create();
         String response = webClient.post()
                 .uri(url)
@@ -46,7 +74,7 @@ public class SearchServiceImpl implements SearchService {
                            - Những thể loại của phim (genres) - trả về một list
                            - Năm sản xuất (year) - trả về số nguyên
                            - Điểm số IMDB (imdb_rating) - trả về số thực dương
-                           - Thời lượng phim (runtime): trả về số nguyên, đơn vị là phút
+                           - Thời lượng phim (runtime): trả về số nguyên, đơn vị là phút 
                            - Tóm tắt nội dung của phim (overview): dễ tả mạch lạc và đầy đủ nội dung phim, không quá 1000 chữ.
                            - Nội dung trả về dưới dạng json
                            {\\\"title\\\": \\\"phim 1\\\",
@@ -70,22 +98,24 @@ public class SearchServiceImpl implements SearchService {
                 .block();
 
         String json= responseToJsonUtil.convertResponseToJson(response);
-        List<FilmDTO> films = new ArrayList<>();
+        List<FilmEntity> films = new ArrayList<>();
         try {
-
             ObjectMapper mapper = new ObjectMapper();
-            mapper.enable(JsonParser.Feature.ALLOW_COMMENTS);
 
             List<Map<String, Object>> movies = mapper.readValue(json, new TypeReference<>() {});
-
-
             for (Map<String, Object> movie : movies) {
                 films.add(filmService.saveFilm(movie));
-
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return films;
+        // Save the history and films
+        historyFilmService.saveListFilmSearched(historyService.save(prompt), films);
+        return films.stream().map(s->{
+            FilmDTO filmDTO = modelMapper.map(s,FilmDTO.class);
+            filmDTO.setUserId(userLogin.getId());
+            return filmDTO;
+        }).toList();
+
     }
 }

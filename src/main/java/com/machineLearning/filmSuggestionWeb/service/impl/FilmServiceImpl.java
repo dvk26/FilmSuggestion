@@ -34,7 +34,7 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public FilmDTO saveFilm(Map<String, Object> film) {
+    public FilmEntity saveFilm(Map<String, Object> film) {
         FilmEntity filmEntity = new FilmEntity();
         filmEntity.setTitle((String) film.get("title"));
         int year = (int) film.get("year");
@@ -54,12 +54,8 @@ public class FilmServiceImpl implements FilmService {
             filmEntity.setUser(userLogin);
             filmRepository.save(filmEntity);
             filmRepository.flush();
-            FilmDTO  filmDTO= modelMapper.map(filmEntity,FilmDTO.class);
-            filmDTO.setUserId(userLogin.getId());
-            return filmDTO;
+            return filmEntity;
         }
-        FilmDTO filmDTO= modelMapper.map(filmRepository.findByTitleAndUser_Id(filmEntity.getTitle(),userLogin.getId()),FilmDTO.class);
-        filmDTO.setUserId(userLogin.getId());
-        return filmDTO;
+        return filmRepository.findByTitleAndUser_Id(filmEntity.getTitle(), userLogin.getId());
     }
 }
