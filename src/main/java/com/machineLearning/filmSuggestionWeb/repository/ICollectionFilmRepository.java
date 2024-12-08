@@ -1,0 +1,24 @@
+package com.machineLearning.filmSuggestionWeb.repository;
+
+import com.machineLearning.filmSuggestionWeb.model.CollectionFilmEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+
+@Repository
+public interface CollectionFilmRepository extends JpaRepository<CollectionFilmEntity, Long> {
+
+    @Query("SELECT cf FROM CollectionFilmEntity cf " +
+            "JOIN cf.film f " +
+            "JOIN cf.collection c " +
+            "WHERE f.user.id = :userId AND c.id = :collectionId")
+    List<CollectionFilmEntity> findByCollectionIdAndUserId(
+            @Param("userId") Long userId,
+            @Param("collectionId") Long collectionId);
+
+    boolean existsByFilm_IdAndCollection_Id(Long filmId, Long collectionId);
+
+    List<CollectionFilmEntity> findByCollection_Id(long collectionId);
+}
