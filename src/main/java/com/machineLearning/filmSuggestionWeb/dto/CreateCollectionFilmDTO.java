@@ -1,4 +1,4 @@
-package com.machineLearning.filmSuggestionWeb.dto.response;
+package com.machineLearning.filmSuggestionWeb.dto;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;

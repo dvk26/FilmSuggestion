@@ -3,6 +3,7 @@ package com.machineLearning.filmSuggestionWeb.repository;
 import com.machineLearning.filmSuggestionWeb.model.CollectionFilmEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param; // Thêm import đúng cho @Param
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

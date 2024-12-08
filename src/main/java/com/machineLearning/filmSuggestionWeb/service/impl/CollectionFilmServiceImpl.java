@@ -1,81 +1,103 @@
-package com.machineLearning.filmSuggestionWeb.controller;
+package com.machineLearning.filmSuggestionWeb.service.impl;
 
+import com.machineLearning.filmSuggestionWeb.config.MapperConfig;
 import com.machineLearning.filmSuggestionWeb.dto.CreateCollectionFilmDTO;
+import com.machineLearning.filmSuggestionWeb.dto.CollectionDTO;
 import com.machineLearning.filmSuggestionWeb.dto.CollectionFilmDTO;
-import com.machineLearning.filmSuggestionWeb.service.CollectionFilmService;
 import com.machineLearning.filmSuggestionWeb.exceptions.GeneralAllException;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import com.machineLearning.filmSuggestionWeb.model.CollectionEntity;
+import com.machineLearning.filmSuggestionWeb.model.CollectionFilmEntity;
+import com.machineLearning.filmSuggestionWeb.model.FilmEntity;
+import com.machineLearning.filmSuggestionWeb.repository.CollectionFilmRepository;
+import com.machineLearning.filmSuggestionWeb.repository.FilmRepository;
+import com.machineLearning.filmSuggestionWeb.repository.UserRepository;
+import com.machineLearning.filmSuggestionWeb.repository.CollectionRepository;
+import com.machineLearning.filmSuggestionWeb.service.CollectionFilmService;
+import org.modelmapper.ModelMapper;
+import org.springframework.stereotype.Service;
 
+import java.util.Date;
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 
-@RestController
-@RequestMapping("/api/collection-films")
-public class CollectionFilmController {
+@Service
+public class CollectionFilmServiceImpl implements CollectionFilmService {
+    private final CollectionFilmRepository collectionfilmRepository;
+    private final FilmRepository filmRepository;
+    private final ModelMapper modelMapper;
+    private final CollectionRepository collectionRepository;
 
-    private final CollectionFilmService collectionFilmService;
-
-    public CollectionFilmController(CollectionFilmService collectionFilmService) {
-        this.collectionFilmService = collectionFilmService;
+    public CollectionFilmServiceImpl(CollectionRepository collectionRepository,
+            CollectionFilmRepository collectionfilmRepository,
+            FilmRepository filmRepository,
+            MapperConfig mapperConfig,
+            ModelMapper modelMapper) {
+        this.collectionRepository = collectionRepository;
+        this.collectionfilmRepository = collectionfilmRepository;
+        this.filmRepository = filmRepository;
+        this.modelMapper = modelMapper;
     }
 
-    // Tạo CollectionFilm mới
-    @PostMapping
-    public ResponseEntity<String> createCollectionFilm(@RequestBody CreateCollectionFilmDTO createCollectionFilmDTO) {
-        try {
-            Boolean result = collectionFilmService.CreateCollectionFilms(createCollectionFilmDTO);
-            if (result) {
-                return new ResponseEntity<>("CollectionFilm created successfully.", HttpStatus.CREATED);
-            } else {
-                return new ResponseEntity<>("Failed to create CollectionFilm.", HttpStatus.BAD_REQUEST);
-            }
-        } catch (GeneralAllException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    @Override
+    public Boolean CreateCollectionFilms(CreateCollectionFilmDTO createCollectionFilmDTO) {
+        if (createCollectionFilmDTO.getFilm_id() == null || createCollectionFilmDTO.getCollection_id() == null) {
+            throw new GeneralAllException("Film ID và Collection ID không được bỏ trống.");
         }
+
+        CollectionFilmEntity temp = new CollectionFilmEntity();
+
+        FilmEntity film = filmRepository.findById(createCollectionFilmDTO.getFilm_id())
+                .orElseThrow(() -> new GeneralAllException(
+                        "Không tìm thấy film với ID " + createCollectionFilmDTO.getFilm_id()));
+        temp.setFilm(film);
+
+        CollectionEntity collection = collectionRepository.findById(createCollectionFilmDTO.getCollection_id())
+                .orElseThrow(() -> new GeneralAllException(
+                        "Không tìm thấy collection với ID " + createCollectionFilmDTO.getCollection_id()));
+        temp.setCollection(collection);
+
+        temp.setDate_add(new java.sql.Date(System.currentTimeMillis()));
+
+        collectionfilmRepository.save(temp);
+        return true;
     }
 
-    // Lấy danh sách CollectionFilm theo userId và collectionId
-    @GetMapping("/user/{userId}/collection/{collectionId}")
-    public ResponseEntity<List<CollectionFilmDTO>> getCollectionFilmsByUserIdAndCollectionId(
-            @PathVariable long userId, @PathVariable long collectionId) {
-        try {
-            List<CollectionFilmDTO> collectionFilms = collectionFilmService.GetAllBy_UserId_CollectionId(userId, collectionId);
-            if (collectionFilms.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
-            return new ResponseEntity<>(collectionFilms, HttpStatus.OK);
-        } catch (GeneralAllException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    @Override
+    public List<CollectionFilmDTO> GetAllBy_UserId_CollectionId(long userId, long collectionId) {
+        List<CollectionFilmEntity> entityList = collectionfilmRepository.findByCollectionIdAndUserId(userId,
+                collectionId);
+
+        List<CollectionFilmDTO> dtoList = new ArrayList<>();
+        for (CollectionFilmEntity entity : entityList) {
+            CollectionFilmDTO dto = modelMapper.map(entity, CollectionFilmDTO.class);
+            dtoList.add(dto);
         }
+
+        return dtoList;
     }
 
-    // Xóa CollectionFilm theo ID
-    @DeleteMapping("/{id}")
-    public ResponseEntity<String> removeCollectionFilmById(@PathVariable long id) {
-        try {
-            Boolean result = collectionFilmService.RemoveCollectionFilmsById(id);
-            if (result) {
-                return new ResponseEntity<>("Xóa phim thành công", HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("Xóa phim không thành công", HttpStatus.BAD_REQUEST);
-            }
-        } catch (GeneralAllException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    @Override
+    public Boolean RemoveCollectionFilmsById(long Id) {
+        if (!collectionfilmRepository.existsById(Id)) {
+            throw new GeneralAllException("Không tồn tại collection film với ID " + Id);
         }
+
+        collectionfilmRepository.deleteById(Id);
+        return true;
     }
 
-    @DeleteMapping("/collection/{collectionId}")
-    public ResponseEntity<String> removeCollectionFilmsByCollectionId(@PathVariable long collectionId) {
-        try {
-            Boolean result = collectionFilmService.RemoveCollectionFilmsByCollectionId(collectionId);
-            if (result) {
-                return new ResponseEntity<>("All CollectionFilms for the collection removed successfully.", HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>("Failed to remove CollectionFilms.", HttpStatus.BAD_REQUEST);
-            }
-        } catch (GeneralAllException e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.BAD_REQUEST);
+    @Override
+    public Boolean RemoveCollectionFilmsByCollectionId(long CollectionId) {
+        if (!collectionRepository.existsById(CollectionId)) {
+            throw new GeneralAllException("Không tồn tại collection với ID " + CollectionId);
         }
+
+        List<CollectionFilmEntity> temp = collectionfilmRepository.findByCollection_Id(CollectionId);
+        for (CollectionFilmEntity cf : temp) {
+            RemoveCollectionFilmsById(cf.getId());
+        }
+
+        return true;
     }
 }
