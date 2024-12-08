@@ -32,4 +32,12 @@ public class FilmEntity {
 
     @OneToMany(mappedBy = "film")
     private List<HistoryFilmEntity> historyFilm;
+
+    //@ManyToMany(mappedBy = "films")
+    // @JoinTable(
+    //         name = "film_collection",
+    //         joinColumns = @JoinColumn(name = "film_id"),
+    //         inverseJoinColumns = @JoinColumn(name = "collection_id")
+    // )
+    //private List<CollectionEntity> collections;
 }
