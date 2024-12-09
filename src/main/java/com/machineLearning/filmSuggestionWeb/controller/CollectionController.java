@@ -57,11 +57,4 @@ public class CollectionController {
         CollectionDTO collectionDTO = collectionService.findById(id);
         return ResponseEntity.status(200).body(new RestResponse(200, "", "Thông tin bộ sưu tập!", collectionDTO));
     }
-
-    // Thêm phim vào bộ sưu tập
-    @PostMapping("/{collectionId}/films/{filmId}")
-    public ResponseEntity<RestResponse> addFilmToCollection(@PathVariable Long collectionId, @PathVariable Long filmId) {
-        collectionService.addFilmToCollection(collectionId, filmId);
-        return ResponseEntity.status(200).body(new RestResponse(200, "", "Phim đã được thêm vào bộ sưu tập!", null));
-    }
 }

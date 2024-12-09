@@ -32,19 +32,13 @@ public class CollectionEntity {
     @Column(name = "updated_at")
     private Instant updatedAt;
 
-    @Column(name = "created_by", nullable = false)
-    private String createdBy;
+//    @Column(name = "created_by", nullable = false)
+//    private String createdBy;
 
     @Column(name = "updated_by")
     private String updatedBy;
 
-    @ManyToMany
-    // @JoinTable(
-    //         name = "film_collection",
-    //         joinColumns = @JoinColumn(name = "collection_id"),
-    //         inverseJoinColumns = @JoinColumn(name = "film_id")
-    // )
-    private List<FilmEntity> films;
+
 
 
     

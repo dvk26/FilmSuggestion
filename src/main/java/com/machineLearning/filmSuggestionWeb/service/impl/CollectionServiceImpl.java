@@ -88,17 +88,7 @@ public class CollectionServiceImpl implements CollectionService {
         return result;
     }
 
-    @Override
-    public void addFilmToCollection(Long collectionId, Long filmId) {
-        CollectionEntity collection = collectionRepository.findById(collectionId)
-                .orElseThrow(() -> new GeneralAllException("Không tìm thấy collection với ID " + collectionId));
 
-        FilmEntity film = filmRepository.findById(filmId)
-                .orElseThrow(() -> new GeneralAllException("Không tìm thấy film với ID " + filmId));
-
-        collection.getFilms().add(film);
-        collectionRepository.save(collection);
-    }
 
     @Override
     public CollectionDTO findById(Long id) {
