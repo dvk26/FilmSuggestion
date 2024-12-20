@@ -21,7 +21,7 @@ public interface CollectionFilmRepository extends JpaRepository<CollectionFilmEn
 
 
 
-            @Query("SELECT cf.id FROM CollectionFilmEntity cf " +
+        @Query("SELECT cf.id FROM CollectionFilmEntity cf " +
             "JOIN cf.film f " +
             "JOIN cf.collection c " +
             "WHERE f.id = :filmId AND c.id = :collectionId")

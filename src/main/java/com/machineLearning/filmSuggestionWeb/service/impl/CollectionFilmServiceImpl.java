@@ -111,10 +111,10 @@ public class CollectionFilmServiceImpl implements CollectionFilmService {
     @Override
     public Boolean CreateAndRemoveCollectionFilm_By_CollectionId_FilmId(List<CreateCollectionFilmDTO> createList, List<RemoveCollectionFilmDTO> removeList)
     {
-        flag = false;
+        Boolean flag = false;
         for(int i = 0; i < removeList.size(); i++)
         {
-            long id = collectionRepository.findIdbyCollection_Id_Film_Id(removeList[i].getFilm_id(), removeList[i].getCollection_id());
+            Long id = CollectionFilmRepository.findIdbyCollection_Id_Film_Id(removeList[i].getFilm_id(), removeList[i].getCollection_id());
             if(id == null)
                 continue;
             flag = true;
@@ -123,7 +123,7 @@ public class CollectionFilmServiceImpl implements CollectionFilmService {
 
         for(int i = 0; i < createList.size(); i++)
         {
-            long id = collectionRepository.findIdbyCollection_Id_Film_Id(createList[i].getFilm_id(), createList[i].getCollection_id());
+            Long id = CollectionFilmRepository.findIdbyCollection_Id_Film_Id(createList[i].getFilm_id(), createList[i].getCollection_id());
             if(id != null)
                 continue;
                 flag = true;
