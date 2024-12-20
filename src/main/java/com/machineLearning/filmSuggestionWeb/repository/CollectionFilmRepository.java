@@ -19,7 +19,16 @@ public interface CollectionFilmRepository extends JpaRepository<CollectionFilmEn
             @Param("userId") Long userId,
             @Param("collectionId") Long collectionId);
 
-    boolean existsByFilm_IdAndCollection_Id(Long filmId, Long collectionId);
+
+
+            @Query("SELECT cf.id FROM CollectionFilmEntity cf " +
+            "JOIN cf.film f " +
+            "JOIN cf.collection c " +
+            "WHERE f.id = :filmId AND c.id = :collectionId")
+    Long findIdbyCollection_Id_Film_Id(
+            @Param("filmId") Long filmId,  
+            @Param("collectionId") Long collectionId); 
+
 
     List<CollectionFilmEntity> findByCollection_Id(long collectionId);
 }

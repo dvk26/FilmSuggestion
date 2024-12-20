@@ -1,6 +1,7 @@
 package com.machineLearning.filmSuggestionWeb.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.machineLearning.filmSuggestionWeb.enums.GenderEnum;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -12,6 +13,7 @@ import jakarta.validation.constraints.NotBlank;
 
 @Getter
 @Setter
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDTO {
     private Long id;
     @NotNull(message = "fullName ko thể bỏ trống!")

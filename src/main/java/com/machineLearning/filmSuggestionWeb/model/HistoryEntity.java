@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name="collection_films")
+@Table(name="histories")
 public class HistoryEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

@@ -2,6 +2,7 @@ package com.machineLearning.filmSuggestionWeb.service.impl;
 
 import com.machineLearning.filmSuggestionWeb.config.MapperConfig;
 import com.machineLearning.filmSuggestionWeb.dto.CreateCollectionFilmDTO;
+import com.machineLearning.filmSuggestionWeb.dto.RemoveCollectionFilmDTO;
 import com.machineLearning.filmSuggestionWeb.dto.CollectionDTO;
 import com.machineLearning.filmSuggestionWeb.dto.CollectionFilmDTO;
 import com.machineLearning.filmSuggestionWeb.exceptions.GeneralAllException;
@@ -65,17 +66,23 @@ public class CollectionFilmServiceImpl implements CollectionFilmService {
 
     @Override
     public List<CollectionFilmDTO> GetAllBy_UserId_CollectionId(long userId, long collectionId) {
-        List<CollectionFilmEntity> entityList = collectionfilmRepository.findByCollectionIdAndUserId(userId,
-                collectionId);
-
+        List<CollectionFilmEntity> entityList = collectionfilmRepository.findByCollectionIdAndUserId(userId, collectionId);
+    
         List<CollectionFilmDTO> dtoList = new ArrayList<>();
+        
+
         for (CollectionFilmEntity entity : entityList) {
             CollectionFilmDTO dto = modelMapper.map(entity, CollectionFilmDTO.class);
+            
+            dto.setFilm_id(entity.getFilm() != null ? entity.getFilm().getId() : null);
+            dto.setCollection_id(entity.getCollection() != null ? entity.getCollection().getId() : null);
+            
             dtoList.add(dto);
         }
-
+    
         return dtoList;
     }
+    
 
     @Override
     public Boolean RemoveCollectionFilmsById(long Id) {
@@ -100,4 +107,30 @@ public class CollectionFilmServiceImpl implements CollectionFilmService {
 
         return true;
     }
+
+    @Override
+    public Boolean CreateAndRemoveCollectionFilm_By_CollectionId_FilmId(List<CreateCollectionFilmDTO> createList, List<RemoveCollectionFilmDTO> removeList)
+    {
+        flag = false;
+        for(int i = 0; i < removeList.size(); i++)
+        {
+            long id = collectionRepository.findIdbyCollection_Id_Film_Id(removeList[i].getFilm_id(), removeList[i].getCollection_id());
+            if(id == null)
+                continue;
+            flag = true;
+            RemoveCollectionFilmsById(id);
+        }
+
+        for(int i = 0; i < createList.size(); i++)
+        {
+            long id = collectionRepository.findIdbyCollection_Id_Film_Id(createList[i].getFilm_id(), createList[i].getCollection_id());
+            if(id != null)
+                continue;
+                flag = true;
+            CreateCollectionFilms(createList[i]);
+        }
+
+        return flag;
+    }
+
 }

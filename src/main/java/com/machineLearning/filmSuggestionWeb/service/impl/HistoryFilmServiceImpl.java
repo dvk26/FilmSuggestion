@@ -27,7 +27,6 @@ public class HistoryFilmServiceImpl implements HistoryFilmService {
 
     public HistoryFilmServiceImpl(HistoryFilmRepository historyFilmRepository, FilmRepository filmRepository, ModelMapper modelMapper) {
         this.historyFilmRepository = historyFilmRepository;
-
         this.filmRepository = filmRepository;
         this.modelMapper = modelMapper;
     }

@@ -12,7 +12,7 @@ import java.sql.Date;
 @Getter
 @Setter
 @NoArgsConstructor
-@Table(name = "collectionfilm")
+@Table(name = "collection_films")
 public class CollectionFilmEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

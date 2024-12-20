@@ -1,11 +1,13 @@
 package com.machineLearning.filmSuggestionWeb.model;
 
 
+import com.machineLearning.filmSuggestionWeb.util.SecurityUtil;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.Instant;
 import java.util.List;
 
 @Entity
@@ -33,14 +35,13 @@ public class FilmEntity {
     @OneToMany(mappedBy = "film")
     private List<HistoryFilmEntity> historyFilm;
 
-    @OneToMany(mappedBy = "film")
-    private List<CollectionFilmEntity> collectionfilm; 
-
-    //@ManyToMany(mappedBy = "films")
-    // @JoinTable(
-    //         name = "film_collection",
-    //         joinColumns = @JoinColumn(name = "film_id"),
-    //         inverseJoinColumns = @JoinColumn(name = "collection_id")
-    // )
-    //private List<CollectionEntity> collections;
+    private Instant createdAt;
+    private Instant updatedAt;
+    private String createdBy;
+    private String updatedBy;
+    @PrePersist
+    public void handleBeforeCreate() {
+        this.createdAt = Instant.now();
+        this.createdBy = SecurityUtil.getCurrentUserLogin().get();
+    }
 }
