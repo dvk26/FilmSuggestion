@@ -45,7 +45,7 @@ public class CollectionFilmController {
                 if(createList.size() == 0 || removeList.size() == 0)
                     return ResponseEntity.status(200).body("Tạo và Xóa thành công nhưng không có gì để làm");
                 
-                    boolean check = CreateAndRemoveCollectionFilm_By_CollectionId_FilmId(createList, removeList);
+                    boolean check = collectionFilmService.CreateAndRemoveCollectionFilm_By_CollectionId_FilmId(createList, removeList);
                     if(check)
                     {
                         return ResponseEntity.status(200).body("Create and Remove Collection Film Successfully");
