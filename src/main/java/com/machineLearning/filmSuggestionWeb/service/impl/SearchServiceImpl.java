@@ -30,7 +30,7 @@ import java.util.Map;
 public class SearchServiceImpl implements SearchService {
 
 
-    String url ="https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyBm1xgORlBqy3TzlKuS70ckKW74AVig-gk";
+    String url ="https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyDErQdEhoetSfyGDhEy3vTvGHuTFynJ1MM";
 
     private final ResponseToJsonUtil responseToJsonUtil;
     private final FilmService filmService;
@@ -101,16 +101,21 @@ public class SearchServiceImpl implements SearchService {
         List<FilmEntity> films = new ArrayList<>();
         try {
             ObjectMapper mapper = new ObjectMapper();
+            mapper.enable(JsonParser.Feature.ALLOW_COMMENTS);
 
             List<Map<String, Object>> movies = mapper.readValue(json, new TypeReference<>() {});
             for (Map<String, Object> movie : movies) {
-                films.add(filmService.saveFilm(movie));
+                films.add(filmService.extractFilmFromResponse(movie));
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
         // Save the history and films
+        films=filmService.saveAll(films);
+
         historyFilmService.saveListFilmSearched(historyService.save(prompt), films);
+
         return films.stream().map(s->{
             FilmDTO filmDTO = modelMapper.map(s,FilmDTO.class);
             filmDTO.setUserId(userLogin.getId());

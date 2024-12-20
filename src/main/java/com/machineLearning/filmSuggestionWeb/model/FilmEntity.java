@@ -1,11 +1,13 @@
 package com.machineLearning.filmSuggestionWeb.model;
 
 
+import com.machineLearning.filmSuggestionWeb.util.SecurityUtil;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.Instant;
 import java.util.List;
 
 @Entity
@@ -32,4 +34,14 @@ public class FilmEntity {
 
     @OneToMany(mappedBy = "film")
     private List<HistoryFilmEntity> historyFilm;
+
+    private Instant createdAt;
+    private Instant updatedAt;
+    private String createdBy;
+    private String updatedBy;
+    @PrePersist
+    public void handleBeforeCreate() {
+        this.createdAt = Instant.now();
+        this.createdBy = SecurityUtil.getCurrentUserLogin().get();
+    }
 }

@@ -7,5 +7,8 @@ import java.util.List;
 import java.util.Map;
 
 public interface FilmService {
-    public FilmEntity saveFilm(Map<String, Object> film);
+    public FilmEntity extractFilmFromResponse(Map<String, Object> film);
+    public void likeFilm(Long id);
+    public void disLikeFilm(Long id);
+    public List<FilmEntity> saveAll(List<FilmEntity> filmEntities);
 }
