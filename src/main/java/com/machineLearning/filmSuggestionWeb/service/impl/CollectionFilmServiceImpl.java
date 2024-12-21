@@ -27,17 +27,21 @@ public class CollectionFilmServiceImpl implements CollectionFilmService {
     private final CollectionFilmRepository collectionfilmRepository;
     private final FilmRepository filmRepository;
     private final ModelMapper modelMapper;
+    private final CollectionFilmRepository collectionFilmRepository;
+
     private final CollectionRepository collectionRepository;
 
     public CollectionFilmServiceImpl(CollectionRepository collectionRepository,
-            CollectionFilmRepository collectionfilmRepository,
-            FilmRepository filmRepository,
-            MapperConfig mapperConfig,
-            ModelMapper modelMapper) {
-        this.collectionRepository = collectionRepository;
+                                     CollectionFilmRepository collectionfilmRepository,
+                                     FilmRepository filmRepository,
+                                     MapperConfig mapperConfig,
+                                     ModelMapper modelMapper, CollectionFilmRepository collectionFilmRepository, CollectionRepository collectionRepository1) {
+
         this.collectionfilmRepository = collectionfilmRepository;
         this.filmRepository = filmRepository;
         this.modelMapper = modelMapper;
+        this.collectionFilmRepository = collectionFilmRepository;
+        this.collectionRepository = collectionRepository1;
     }
 
     @Override
@@ -111,10 +115,10 @@ public class CollectionFilmServiceImpl implements CollectionFilmService {
     @Override
     public Boolean CreateAndRemoveCollectionFilm_By_CollectionId_FilmId(List<CreateCollectionFilmDTO> createList, List<RemoveCollectionFilmDTO> removeList)
     {
-        Boolean flag = false;
+        boolean flag = false;
         for(int i = 0; i < removeList.size(); i++)
         {
-            Long id = CollectionFilmRepository.findIdbyCollection_Id_Film_Id(removeList[i].getFilm_id(), removeList[i].getCollection_id());
+            Long id = collectionFilmRepository.findIdbyCollection_Id_Film_Id(removeList.get(i).getFilm_id(), removeList.get(i).getCollection_id());
             if(id == null)
                 continue;
             flag = true;
@@ -123,11 +127,11 @@ public class CollectionFilmServiceImpl implements CollectionFilmService {
 
         for(int i = 0; i < createList.size(); i++)
         {
-            Long id = CollectionFilmRepository.findIdbyCollection_Id_Film_Id(createList[i].getFilm_id(), createList[i].getCollection_id());
+            Long id = collectionFilmRepository.findIdbyCollection_Id_Film_Id(createList.get(i).getFilm_id(), createList.get(i).getCollection_id());
             if(id != null)
                 continue;
                 flag = true;
-            CreateCollectionFilms(createList[i]);
+            CreateCollectionFilms(createList.get(i));
         }
 
         return flag;
