@@ -1,7 +1,7 @@
 package com.machineLearning.filmSuggestionWeb.service;
 
 import com.machineLearning.filmSuggestionWeb.dto.CreateCollectionFilmDTO;
-import com.machineLearning.filmSuggestionWeb.dto.RemoveCollectionFilmDTO;
+import com.machineLearning.filmSuggestionWeb.dto.CreateAndRemoveCollectionFilmDTO;
 import com.machineLearning.filmSuggestionWeb.dto.CollectionFilmDTO;
 import com.machineLearning.filmSuggestionWeb.model.CollectionFilmEntity;
 
@@ -12,5 +12,5 @@ public interface CollectionFilmService {
     public List<CollectionFilmDTO> GetAllBy_UserId_CollectionId(long userId, long collectionId);
     public Boolean RemoveCollectionFilmsById(long Id);
     public Boolean RemoveCollectionFilmsByCollectionId(long CollectionId);
-    public Boolean CreateAndRemoveCollectionFilm_By_CollectionId_FilmId(List<CreateCollectionFilmDTO> createList, List<RemoveCollectionFilmDTO> removeList);
+    public Boolean CreateAndRemoveCollectionFilm_By_CollectionId_FilmId(List<CreateCollectionFilmDTO> createList, List<CreateCollectionFilmDTO> removeList);
 }

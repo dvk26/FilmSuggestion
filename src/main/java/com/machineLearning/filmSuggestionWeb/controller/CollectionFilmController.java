@@ -1,7 +1,7 @@
 package com.machineLearning.filmSuggestionWeb.controller;
 
 import com.machineLearning.filmSuggestionWeb.dto.CreateCollectionFilmDTO;
-import com.machineLearning.filmSuggestionWeb.dto.RemoveCollectionFilmDTO;
+import com.machineLearning.filmSuggestionWeb.dto.CreateAndRemoveCollectionFilmDTO;
 import com.machineLearning.filmSuggestionWeb.dto.CollectionFilmDTO;
 import com.machineLearning.filmSuggestionWeb.service.CollectionFilmService;
 
@@ -26,8 +26,11 @@ public class CollectionFilmController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<String> createCollectionFilm(@RequestBody CreateCollectionFilmDTO createCollectionFilmDTO) {
+    public ResponseEntity<String> createCollectionFilm(
+        @RequestBody CreateCollectionFilmDTO createCollectionFilmDTO
+        ) {
         try {
+
             Boolean isCreated = collectionFilmService.CreateCollectionFilms(createCollectionFilmDTO);
             return ResponseEntity.status(200).body("Collection Film created successfully.");
         } catch (GeneralAllException e) {
@@ -37,15 +40,14 @@ public class CollectionFilmController {
 
     @PostMapping("/CreateAndRemove")
     public ResponseEntity<String> createAndRemoveCollectionFilm(
-        @RequestBody List<CreateCollectionFilmDTO> createList,
-        @RequestBody List<RemoveCollectionFilmDTO> removeList
+        @RequestBody CreateAndRemoveCollectionFilmDTO collectionfilm
         ){
             try{
-                if(createList.size() == 0 || removeList.size() == 0)
+                if(collectionfilm.getCreateList().isEmpty() || collectionfilm.getRemoveList().isEmpty())
                     return ResponseEntity.status(200).body("Tạo và Xóa thành công nhưng không có gì để làm");
-                
-                    boolean check = collectionFilmService.CreateAndRemoveCollectionFilm_By_CollectionId_FilmId(createList, removeList);
-                    if(check)
+                    
+                    Boolean check = collectionFilmService.CreateAndRemoveCollectionFilm_By_CollectionId_FilmId(collectionfilm.getCreateList(), collectionfilm.getRemoveList());
+                    if(check == true)
                     {
                         return ResponseEntity.status(200).body("Create and Remove Collection Film Successfully");
                     }

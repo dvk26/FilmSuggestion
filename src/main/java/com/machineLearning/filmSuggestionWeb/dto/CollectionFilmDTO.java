@@ -10,8 +10,6 @@ import java.sql.Date;
 
 @Getter
 @Setter
-@NoArgsConstructor
-@AllArgsConstructor
 public class CollectionFilmDTO {
     private Long id;
     private Long film_id;

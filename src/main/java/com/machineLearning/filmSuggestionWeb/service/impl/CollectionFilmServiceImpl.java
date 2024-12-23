@@ -2,7 +2,7 @@ package com.machineLearning.filmSuggestionWeb.service.impl;
 
 import com.machineLearning.filmSuggestionWeb.config.MapperConfig;
 import com.machineLearning.filmSuggestionWeb.dto.CreateCollectionFilmDTO;
-import com.machineLearning.filmSuggestionWeb.dto.RemoveCollectionFilmDTO;
+import com.machineLearning.filmSuggestionWeb.dto.CreateAndRemoveCollectionFilmDTO;
 import com.machineLearning.filmSuggestionWeb.dto.CollectionDTO;
 import com.machineLearning.filmSuggestionWeb.dto.CollectionFilmDTO;
 import com.machineLearning.filmSuggestionWeb.exceptions.GeneralAllException;
@@ -113,9 +113,9 @@ public class CollectionFilmServiceImpl implements CollectionFilmService {
     }
 
     @Override
-    public Boolean CreateAndRemoveCollectionFilm_By_CollectionId_FilmId(List<CreateCollectionFilmDTO> createList, List<RemoveCollectionFilmDTO> removeList)
+    public Boolean CreateAndRemoveCollectionFilm_By_CollectionId_FilmId(List<CreateCollectionFilmDTO> createList, List<CreateCollectionFilmDTO> removeList)
     {
-        boolean flag = false;
+        Boolean flag = false;
         for(int i = 0; i < removeList.size(); i++)
         {
             Long id = collectionFilmRepository.findIdbyCollection_Id_Film_Id(removeList.get(i).getFilm_id(), removeList.get(i).getCollection_id());
