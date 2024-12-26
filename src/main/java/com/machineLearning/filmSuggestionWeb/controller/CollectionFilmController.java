@@ -5,7 +5,6 @@ import com.machineLearning.filmSuggestionWeb.dto.CreateAndRemoveCollectionFilmDT
 import com.machineLearning.filmSuggestionWeb.dto.CollectionFilmDTO;
 import com.machineLearning.filmSuggestionWeb.service.CollectionFilmService;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 
 import com.machineLearning.filmSuggestionWeb.exceptions.GeneralAllException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,13 +39,13 @@ public class CollectionFilmController {
 
     @PostMapping("/CreateAndRemove")
     public ResponseEntity<String> createAndRemoveCollectionFilm(
-            @RequestBody CreateAndRemoveCollectionFilmDTO collectionfilm) {
+            @RequestBody CreateAndRemoveCollectionFilmDTO createAndRemoveCollectionFilmDTO) {
         try {
 
-            if (collectionfilm.getAddColletions().isEmpty())
+            if (createAndRemoveCollectionFilmDTO.getAddCollections().isEmpty())
                 return ResponseEntity.status(200).body("Tạo và Xóa thành công nhưng không có gì để làm");
 
-            Boolean check = collectionFilmService.CreateAndRemoveCollectionFilm_By_CollectionId_FilmId(collectionfilm);
+            Boolean check = collectionFilmService.CreateAndRemoveCollectionFilm_By_CollectionId_FilmId(createAndRemoveCollectionFilmDTO);
             if (check == true) {
                 return ResponseEntity.status(200).body("Create and Remove Collection Film Successfully");
             } else {

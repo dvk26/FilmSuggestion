@@ -45,8 +45,6 @@ public class CollectionServiceImpl implements CollectionService {
         // Gắn user vào collection
         collectionEntity.setUser(userRepository.findById(collectionDTO.getUserId())
                 .orElseThrow(() -> new GeneralAllException("Không tìm thấy user với ID " + collectionDTO.getUserId())));
-
-        collectionEntity.setCreatedAt(Instant.now());
         collectionRepository.save(collectionEntity);
     }
 
@@ -60,7 +58,6 @@ public class CollectionServiceImpl implements CollectionService {
                 .orElseThrow(() -> new GeneralAllException("Không tìm thấy collection với ID " + collectionDTO.getId()));
 
         collectionEntity.setName(collectionDTO.getName());
-        collectionEntity.setUpdatedAt(Instant.now());
         collectionRepository.save(collectionEntity);
     }
 
