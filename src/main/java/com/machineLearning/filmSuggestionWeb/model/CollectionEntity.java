@@ -26,17 +26,6 @@ public class CollectionEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
-    private Instant createdAt;
-
-    @Column(name = "updated_at")
-    private Instant updatedAt;
-
-    @Column(name = "created_by", nullable = false)
-    private String createdBy;
-
-    @Column(name = "updated_by")
-    private String updatedBy;
 
     @ManyToMany
     // @JoinTable(
@@ -45,4 +34,9 @@ public class CollectionEntity {
     //         inverseJoinColumns = @JoinColumn(name = "film_id")
     // )
     private List<FilmEntity> films;
+
+
+    
+    @OneToMany(mappedBy = "collection")
+    private List<CollectionFilmEntity> collectionfilm; 
 }
