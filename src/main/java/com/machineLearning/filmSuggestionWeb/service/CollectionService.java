@@ -9,7 +9,5 @@ public interface CollectionService {
     public void createCollection(CollectionDTO collectionDTO);
     public void updateCollection(CollectionDTO collectionDTO);
     public List<CollectionDTO> fetchAllCollectionsByUserId(Long userId);
-    public CollectionDTO findById(Long id);
     public void deleteCollection(Long id);
-    public void addFilmToCollection(Long collectionId, Long filmId);
 }

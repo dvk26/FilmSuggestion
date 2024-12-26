@@ -45,6 +45,7 @@ public class CollectionServiceImpl implements CollectionService {
         // Gắn user vào collection
         collectionEntity.setUser(userRepository.findById(collectionDTO.getUserId())
                 .orElseThrow(() -> new GeneralAllException("Không tìm thấy user với ID " + collectionDTO.getUserId())));
+
         collectionRepository.save(collectionEntity);
     }
 
@@ -83,24 +84,5 @@ public class CollectionServiceImpl implements CollectionService {
             result.add(dto);
         }
         return result;
-    }
-
-    @Override
-    public void addFilmToCollection(Long collectionId, Long filmId) {
-        CollectionEntity collection = collectionRepository.findById(collectionId)
-                .orElseThrow(() -> new GeneralAllException("Không tìm thấy collection với ID " + collectionId));
-
-        FilmEntity film = filmRepository.findById(filmId)
-                .orElseThrow(() -> new GeneralAllException("Không tìm thấy film với ID " + filmId));
-
-        collection.getFilms().add(film);
-        collectionRepository.save(collection);
-    }
-
-    @Override
-    public CollectionDTO findById(Long id) {
-        CollectionEntity collectionEntity = collectionRepository.findById(id)
-                .orElseThrow(() -> new GeneralAllException("Không tìm thấy collection với ID " + id));
-        return modelMapper.map(collectionEntity, CollectionDTO.class);
     }
 }

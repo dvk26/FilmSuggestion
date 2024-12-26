@@ -11,10 +11,7 @@ import java.util.List;
 @Setter
 public class CollectionDTO {
     private Long id;
-
     @NotNull(message = "Tên bộ sưu tập không thể để trống!")
     private String name;
-
     private Long userId;
-    private List<Long> filmIds;
 }

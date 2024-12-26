@@ -36,7 +36,8 @@ public class CollectionEntity {
     private List<FilmEntity> films;
 
 
-    
+
     @OneToMany(mappedBy = "collection")
-    private List<CollectionFilmEntity> collectionfilm; 
+    private List<CollectionFilmEntity> collectionfilm;
+
 }

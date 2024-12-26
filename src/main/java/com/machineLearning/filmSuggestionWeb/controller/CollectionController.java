@@ -50,18 +50,4 @@ public class CollectionController {
         List<CollectionDTO> collections = collectionService.fetchAllCollectionsByUserId(userId);
         return ResponseEntity.status(200).body(new RestResponse(200, "", "Danh sách bộ sưu tập của người dùng!", collections));
     }
-
-    // Lấy thông tin bộ sưu tập theo ID
-    @GetMapping("/{id}")
-    public ResponseEntity<RestResponse> getCollectionById(@PathVariable Long id) {
-        CollectionDTO collectionDTO = collectionService.findById(id);
-        return ResponseEntity.status(200).body(new RestResponse(200, "", "Thông tin bộ sưu tập!", collectionDTO));
-    }
-
-    // Thêm phim vào bộ sưu tập
-    @PostMapping("/{collectionId}/films/{filmId}")
-    public ResponseEntity<RestResponse> addFilmToCollection(@PathVariable Long collectionId, @PathVariable Long filmId) {
-        collectionService.addFilmToCollection(collectionId, filmId);
-        return ResponseEntity.status(200).body(new RestResponse(200, "", "Phim đã được thêm vào bộ sưu tập!", null));
-    }
 }
