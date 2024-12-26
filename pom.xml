@@ -134,6 +134,11 @@
 			<artifactId>nimbus-jose-jwt</artifactId>
 			<version>9.23</version>
 		</dependency>
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.15.0</version> <!-- Chọn phiên bản mới nhất -->
+    	</dependency>
 
 	</dependencies>
 

@@ -113,25 +113,28 @@ public class CollectionFilmServiceImpl implements CollectionFilmService {
     }
 
     @Override
-    public Boolean CreateAndRemoveCollectionFilm_By_CollectionId_FilmId(List<CreateCollectionFilmDTO> createList, List<CreateCollectionFilmDTO> removeList)
+    public Boolean CreateAndRemoveCollectionFilm_By_CollectionId_FilmId(CreateAndRemoveCollectionFilmDTO _createAndRemoveCollectionFilm)
     {
         Boolean flag = false;
-        for(int i = 0; i < removeList.size(); i++)
+        for(int i = 0; i < _createAndRemoveCollectionFilm.getRemoveColletions().size(); i++)
         {
-            Long id = collectionFilmRepository.findIdbyCollection_Id_Film_Id(removeList.get(i).getFilm_id(), removeList.get(i).getCollection_id());
+            Long id = collectionFilmRepository.findIdbyCollection_Id_Film_Id(_createAndRemoveCollectionFilm.getFilm_id(), _createAndRemoveCollectionFilm.getRemoveColletions().get(i));
             if(id == null)
                 continue;
             flag = true;
             RemoveCollectionFilmsById(id);
         }
 
-        for(int i = 0; i < createList.size(); i++)
+        for(int i = 0; i < _createAndRemoveCollectionFilm.getAddColletions().size(); i++)
         {
-            Long id = collectionFilmRepository.findIdbyCollection_Id_Film_Id(createList.get(i).getFilm_id(), createList.get(i).getCollection_id());
+            Long id = collectionFilmRepository.findIdbyCollection_Id_Film_Id(_createAndRemoveCollectionFilm.getFilm_id(), _createAndRemoveCollectionFilm.getAddColletions().get(i));
             if(id != null)
                 continue;
                 flag = true;
-            CreateCollectionFilms(createList.get(i));
+            CreateCollectionFilmDTO dto = new CreateCollectionFilmDTO();
+            dto.setCollection_id(_createAndRemoveCollectionFilm.getAddColletions().get(i));
+            dto.setFilm_id(_createAndRemoveCollectionFilm.getFilm_id());
+            CreateCollectionFilms(dto);
         }
 
         return flag;

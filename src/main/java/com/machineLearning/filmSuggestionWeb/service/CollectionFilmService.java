@@ -12,5 +12,5 @@ public interface CollectionFilmService {
     public List<CollectionFilmDTO> GetAllBy_UserId_CollectionId(long userId, long collectionId);
     public Boolean RemoveCollectionFilmsById(long Id);
     public Boolean RemoveCollectionFilmsByCollectionId(long CollectionId);
-    public Boolean CreateAndRemoveCollectionFilm_By_CollectionId_FilmId(List<CreateCollectionFilmDTO> createList, List<CreateCollectionFilmDTO> removeList);
+    public Boolean CreateAndRemoveCollectionFilm_By_CollectionId_FilmId(CreateAndRemoveCollectionFilmDTO _createAndRemoveCollectionFilm);
 }

@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.Console;
 import java.util.List;
 
 @RestController
@@ -27,8 +28,7 @@ public class CollectionFilmController {
 
     @PostMapping("/create")
     public ResponseEntity<String> createCollectionFilm(
-        @RequestBody CreateCollectionFilmDTO createCollectionFilmDTO
-        ) {
+            @RequestBody CreateCollectionFilmDTO createCollectionFilmDTO) {
         try {
 
             Boolean isCreated = collectionFilmService.CreateCollectionFilms(createCollectionFilmDTO);
@@ -40,25 +40,22 @@ public class CollectionFilmController {
 
     @PostMapping("/CreateAndRemove")
     public ResponseEntity<String> createAndRemoveCollectionFilm(
-        @RequestBody CreateAndRemoveCollectionFilmDTO collectionfilm
-        ){
-            try{
-                if(collectionfilm.getCreateList().isEmpty() || collectionfilm.getRemoveList().isEmpty())
-                    return ResponseEntity.status(200).body("Tạo và Xóa thành công nhưng không có gì để làm");
-                    
-                    Boolean check = collectionFilmService.CreateAndRemoveCollectionFilm_By_CollectionId_FilmId(collectionfilm.getCreateList(), collectionfilm.getRemoveList());
-                    if(check == true)
-                    {
-                        return ResponseEntity.status(200).body("Create and Remove Collection Film Successfully");
-                    }
-                    else
-                    {
-                        return ResponseEntity.badRequest().body("Can't Create and Remove Collection Film Correctly ");
-                    }
-            }catch(GeneralAllException e) {
-                return ResponseEntity.badRequest().body(e.getMessage());
+            @RequestBody CreateAndRemoveCollectionFilmDTO collectionfilm) {
+        try {
+
+            if (collectionfilm.getRemoveColletions().isEmpty() || collectionfilm.getAddColletions().isEmpty())
+                return ResponseEntity.status(200).body("Tạo và Xóa thành công nhưng không có gì để làm");
+
+            Boolean check = collectionFilmService.CreateAndRemoveCollectionFilm_By_CollectionId_FilmId(collectionfilm);
+            if (check == true) {
+                return ResponseEntity.status(200).body("Create and Remove Collection Film Successfully");
+            } else {
+                return ResponseEntity.badRequest().body("Can't Create and Remove Collection Film Correctly ");
             }
+        } catch (GeneralAllException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
 
     // API to get all collection films by user ID and collection ID
     @GetMapping("/get/{userId}/{collectionId}")

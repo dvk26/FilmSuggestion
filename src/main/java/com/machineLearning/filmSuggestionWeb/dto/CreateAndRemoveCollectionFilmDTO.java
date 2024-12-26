@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
 import java.util.List;
 
 
@@ -14,6 +15,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateAndRemoveCollectionFilmDTO {
-    private List<CreateCollectionFilmDTO> createList;
-    private List<CreateCollectionFilmDTO> removeList;
+    // private List<CreateCollectionFilmDTO> createList;
+    // private List<CreateCollectionFilmDTO> removeList;
+    Long film_id;
+    List<Long> RemoveColletions;
+    List<Long> AddColletions;
 }
