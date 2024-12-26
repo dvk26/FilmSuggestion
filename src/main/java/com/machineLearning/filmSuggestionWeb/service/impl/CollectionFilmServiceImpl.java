@@ -116,21 +116,15 @@ public class CollectionFilmServiceImpl implements CollectionFilmService {
     public Boolean CreateAndRemoveCollectionFilm_By_CollectionId_FilmId(CreateAndRemoveCollectionFilmDTO _createAndRemoveCollectionFilm)
     {
         Boolean flag = false;
-        for(int i = 0; i < _createAndRemoveCollectionFilm.getRemoveColletions().size(); i++)
+        List<Long> collectionfilmsid = collectionFilmRepository.findAllByFilmId(_createAndRemoveCollectionFilm.getFilm_id());
+        for(int i = 0; i < collectionfilmsid.size(); i++)
         {
-            Long id = collectionFilmRepository.findIdbyCollection_Id_Film_Id(_createAndRemoveCollectionFilm.getFilm_id(), _createAndRemoveCollectionFilm.getRemoveColletions().get(i));
-            if(id == null)
-                continue;
-            flag = true;
-            RemoveCollectionFilmsById(id);
+            RemoveCollectionFilmsById(collectionfilmsid.get(i));
         }
 
         for(int i = 0; i < _createAndRemoveCollectionFilm.getAddColletions().size(); i++)
         {
-            Long id = collectionFilmRepository.findIdbyCollection_Id_Film_Id(_createAndRemoveCollectionFilm.getFilm_id(), _createAndRemoveCollectionFilm.getAddColletions().get(i));
-            if(id != null)
-                continue;
-                flag = true;
+            flag = true;
             CreateCollectionFilmDTO dto = new CreateCollectionFilmDTO();
             dto.setCollection_id(_createAndRemoveCollectionFilm.getAddColletions().get(i));
             dto.setFilm_id(_createAndRemoveCollectionFilm.getFilm_id());

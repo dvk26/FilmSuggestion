@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
-
+import java.util.ArrayList;
 
 @Getter
 @Setter
@@ -18,6 +18,5 @@ public class CreateAndRemoveCollectionFilmDTO {
     // private List<CreateCollectionFilmDTO> createList;
     // private List<CreateCollectionFilmDTO> removeList;
     Long film_id;
-    List<Long> RemoveColletions;
-    List<Long> AddColletions;
+    List<Long> AddColletions = new ArrayList<Long>();
 }

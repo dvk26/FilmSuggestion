@@ -43,7 +43,7 @@ public class CollectionFilmController {
             @RequestBody CreateAndRemoveCollectionFilmDTO collectionfilm) {
         try {
 
-            if (collectionfilm.getRemoveColletions().isEmpty() || collectionfilm.getAddColletions().isEmpty())
+            if (collectionfilm.getAddColletions().isEmpty())
                 return ResponseEntity.status(200).body("Tạo và Xóa thành công nhưng không có gì để làm");
 
             Boolean check = collectionFilmService.CreateAndRemoveCollectionFilm_By_CollectionId_FilmId(collectionfilm);
