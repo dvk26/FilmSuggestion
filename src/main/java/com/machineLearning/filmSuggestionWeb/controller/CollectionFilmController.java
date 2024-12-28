@@ -1,8 +1,11 @@
 package com.machineLearning.filmSuggestionWeb.controller;
 
+import com.machineLearning.filmSuggestionWeb.dto.CollectionDTO;
 import com.machineLearning.filmSuggestionWeb.dto.CreateCollectionFilmDTO;
 import com.machineLearning.filmSuggestionWeb.dto.CreateAndRemoveCollectionFilmDTO;
 import com.machineLearning.filmSuggestionWeb.dto.CollectionFilmDTO;
+import com.machineLearning.filmSuggestionWeb.dto.response.FilmDTO;
+import com.machineLearning.filmSuggestionWeb.dto.response.RestResponse;
 import com.machineLearning.filmSuggestionWeb.service.CollectionFilmService;
 
 
@@ -58,18 +61,15 @@ public class CollectionFilmController {
 
     // API to get all collection films by user ID and collection ID
     @GetMapping("/get/{userId}/{collectionId}")
-    public ResponseEntity<List<CollectionFilmDTO>> getAllByUserIdAndCollectionId(
+    public ResponseEntity<RestResponse> getAllByUserIdAndCollectionId(
             @PathVariable long userId,
             @PathVariable long collectionId) {
-        try {
-            List<CollectionFilmDTO> collectionFilms = collectionFilmService.GetAllBy_UserId_CollectionId(userId,
-                    collectionId);
-            return ResponseEntity.ok(collectionFilms);
-        } catch (GeneralAllException e) {
-            return ResponseEntity.badRequest().body(null);
-        }
+        return ResponseEntity.ok().body(new RestResponse(201, "", " ", collectionFilmService.GetAllBy_UserId_CollectionId(userId,collectionId)));
     }
-
+    @GetMapping("/tickedCollection/{filmId}")
+    public ResponseEntity<RestResponse> getCollectionByFilmId(@PathVariable Long filmId){
+        return ResponseEntity.ok().body(new RestResponse(201, "", " ", collectionFilmService.fetchAllCollectionTicked(filmId)));
+    }
     // API to remove a collection film by ID
     @DeleteMapping("/remove/{id}")
     public ResponseEntity<String> removeCollectionFilmById(@PathVariable long id) {

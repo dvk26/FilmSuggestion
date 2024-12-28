@@ -30,7 +30,7 @@ import java.util.Map;
 public class SearchServiceImpl implements SearchService {
 
 
-    String url ="https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyCpnE5YMWC3WATIS7gr3hSRyUwp80OVOJg";
+    String url ="https://generativelanguage.googleapis.com/v1beta/tunedModels/generate-recommend-film:generateContent?key=AIzaSyCpnE5YMWC3WATIS7gr3hSRyUwp80OVOJg";
 
     private final ResponseToJsonUtil responseToJsonUtil;
     private final FilmService filmService;
@@ -69,7 +69,7 @@ public class SearchServiceImpl implements SearchService {
                     {
                       "parts": [
                         {
-                          "text": "Gợi ý khoảng 4-5 bộ phim, nếu có nhiều hơn, thì chọn ra 7-8 bộ có điểm số IMDB cao nhất.
+                          "text": "Gợi ý khoảng 10 bộ phim, nếu có nhiều hơn, thì chọn ra 12-15 bộ có điểm số IMDB cao nhất.
                            - Tên phim (title) - Ví dụ nếu chỉ có tiếng việt thôi thì có định dạng ko bao gồm dấu đóng mở ngoặc \\\"Tên tiếng việt\\\" hoặc nếu vừa có tên ngoại ngữ vừa có tiếng việt thì có định dạng \\\"Tên ngoại ngữ (Tên tiếng việt)\\\"    
                            - Những thể loại của phim (genres) - trả về một list
                            - Năm sản xuất (year) - trả về số nguyên

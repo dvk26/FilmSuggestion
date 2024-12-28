@@ -5,18 +5,23 @@ import com.machineLearning.filmSuggestionWeb.dto.CreateCollectionFilmDTO;
 import com.machineLearning.filmSuggestionWeb.dto.CreateAndRemoveCollectionFilmDTO;
 import com.machineLearning.filmSuggestionWeb.dto.CollectionDTO;
 import com.machineLearning.filmSuggestionWeb.dto.CollectionFilmDTO;
+import com.machineLearning.filmSuggestionWeb.dto.response.FilmDTO;
 import com.machineLearning.filmSuggestionWeb.exceptions.GeneralAllException;
 import com.machineLearning.filmSuggestionWeb.model.CollectionEntity;
 import com.machineLearning.filmSuggestionWeb.model.CollectionFilmEntity;
 import com.machineLearning.filmSuggestionWeb.model.FilmEntity;
+import com.machineLearning.filmSuggestionWeb.model.UserEntity;
 import com.machineLearning.filmSuggestionWeb.repository.CollectionFilmRepository;
 import com.machineLearning.filmSuggestionWeb.repository.FilmRepository;
 import com.machineLearning.filmSuggestionWeb.repository.UserRepository;
 import com.machineLearning.filmSuggestionWeb.repository.CollectionRepository;
 import com.machineLearning.filmSuggestionWeb.service.CollectionFilmService;
+import com.machineLearning.filmSuggestionWeb.util.SecurityUtil;
+import org.modelmapper.Converters;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.Date;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -30,18 +35,21 @@ public class CollectionFilmServiceImpl implements CollectionFilmService {
     private final CollectionFilmRepository collectionFilmRepository;
 
     private final CollectionRepository collectionRepository;
+    private final UserRepository userRepository;
 
     public CollectionFilmServiceImpl(CollectionRepository collectionRepository,
                                      CollectionFilmRepository collectionfilmRepository,
                                      FilmRepository filmRepository,
                                      MapperConfig mapperConfig,
-                                     ModelMapper modelMapper, CollectionFilmRepository collectionFilmRepository, CollectionRepository collectionRepository1) {
+                                     ModelMapper modelMapper, CollectionFilmRepository collectionFilmRepository, CollectionRepository collectionRepository1, SecurityUtil securityUtil, UserRepository userRepository) {
 
         this.collectionfilmRepository = collectionfilmRepository;
         this.filmRepository = filmRepository;
         this.modelMapper = modelMapper;
         this.collectionFilmRepository = collectionFilmRepository;
         this.collectionRepository = collectionRepository1;
+
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -69,22 +77,14 @@ public class CollectionFilmServiceImpl implements CollectionFilmService {
     }
 
     @Override
-    public List<CollectionFilmDTO> GetAllBy_UserId_CollectionId(long userId, long collectionId) {
+    public List<FilmDTO> GetAllBy_UserId_CollectionId(long userId, long collectionId) {
         List<CollectionFilmEntity> entityList = collectionfilmRepository.findByCollectionIdAndUserId(userId, collectionId);
-    
-        List<CollectionFilmDTO> dtoList = new ArrayList<>();
-        
-
-        for (CollectionFilmEntity entity : entityList) {
-            CollectionFilmDTO dto = modelMapper.map(entity, CollectionFilmDTO.class);
-            
-            dto.setFilm_id(entity.getFilm() != null ? entity.getFilm().getId() : null);
-            dto.setCollection_id(entity.getCollection() != null ? entity.getCollection().getId() : null);
-            
-            dtoList.add(dto);
-        }
-    
-        return dtoList;
+        List<FilmEntity> filmEntities = entityList.stream().map(s->s.getFilm()).toList();
+        return filmEntities.stream().map(s->{
+            FilmDTO filmDTO = modelMapper.map(s,FilmDTO.class);
+            filmDTO.setUserId(userId);
+            return filmDTO;
+        }).toList();
     }
     
 
@@ -132,6 +132,26 @@ public class CollectionFilmServiceImpl implements CollectionFilmService {
         }
 
         return flag;
+    }
+
+    @Override
+    public List<CollectionDTO> fetchAllCollectionTicked(Long filmId) {
+        String userName = SecurityUtil.getCurrentUserLogin().isPresent()?
+                SecurityUtil.getCurrentUserLogin().get(): "";
+
+        UserEntity userEntity= userRepository.findByUserName(userName);
+        if(userEntity == null){
+            throw  new GeneralAllException("Ko ton tai nguoi dung!");
+        }
+        List<Long> collectionIds= collectionFilmRepository.findAllByCollectionIdByFilmIdAndUserId(filmId,userEntity.getId());
+        List<CollectionEntity> collectionEntities = collectionRepository.findAllById(collectionIds);
+        List<CollectionDTO> res =new ArrayList<>();
+        collectionEntities.stream().forEach(s->{
+            CollectionDTO collectionDTO = modelMapper.map(s,CollectionDTO.class);
+            collectionDTO.setUserId(userEntity.getId());
+            res.add(collectionDTO);
+        });
+        return res;
     }
 
 }
