@@ -30,7 +30,7 @@ import java.util.Map;
 public class SearchServiceImpl implements SearchService {
 
 
-    String url ="https://generativelanguage.googleapis.com/v1beta/tunedModels/generate-recommend-film:generateContent?key=AIzaSyCpnE5YMWC3WATIS7gr3hSRyUwp80OVOJg";
+    String url ="https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyCpnE5YMWC3WATIS7gr3hSRyUwp80OVOJg";
 
     private final ResponseToJsonUtil responseToJsonUtil;
     private final FilmService filmService;
