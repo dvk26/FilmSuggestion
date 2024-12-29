@@ -30,7 +30,7 @@ import java.util.Map;
 public class SearchServiceImpl implements SearchService {
 
 
-    String url ="https://generativelanguage.googleapis.com/v1beta/tunedModels/generate-recommend-film-v2:generateContent?key=AIzaSyCpnE5YMWC3WATIS7gr3hSRyUwp80OVOJg";
+    String url ="https://generativelanguage.googleapis.com/v1beta/tunedModels/generate-recommend-film-v3:generateContent?key=AIzaSyCpnE5YMWC3WATIS7gr3hSRyUwp80OVOJg";
 
     private final ResponseToJsonUtil responseToJsonUtil;
     private final FilmService filmService;
@@ -69,7 +69,7 @@ public class SearchServiceImpl implements SearchService {
                     {
                       "parts": [
                         {
-                          "text": "Gợi ý khoảng 8 bộ phim, nếu có nhiều hơn, thì chọn ra 10-12 bộ có điểm số IMDB cao nhất.
+                          "text": "Gợi ý khoảng 7-9 bộ phim, nếu có nhiều hơn, thì chọn ra 10-12 bộ có điểm số IMDB cao nhất.
                            - Tên phim (title) - Ví dụ nếu chỉ có tiếng việt thôi thì có định dạng ko bao gồm dấu đóng mở ngoặc \\\"Tên tiếng việt\\\" hoặc nếu vừa có tên ngoại ngữ vừa có tiếng việt thì có định dạng \\\"Tên ngoại ngữ (Tên tiếng việt)\\\"    
                            - Những thể loại của phim (genres) - trả về một list
                            - Năm sản xuất (year) - trả về số nguyên
@@ -77,14 +77,15 @@ public class SearchServiceImpl implements SearchService {
                            - Thời lượng phim (runtime): trả về số nguyên, đơn vị là phút 
                            - Tóm tắt nội dung của phim (overview): dễ tả mạch lạc và đầy đủ nội dung phim, không quá 1000 chữ.
                            - Trả về dạng json đúng và mảng json trả về phải được đầy đủ.
-                           - Nội dung trả về dưới dạng json
                            - Không được sinh ra các từ chứa trong dấu \\" \\"
+                           
                            {\\\"title\\\": \\\"phim 1\\\",
                            \\\"genres\\\": [\\\"Kinh dị\\\", \\\"Viễn tưởng\\\", ...],
                            \\\"year\\\": 2020,
                            \\\"imdb_rating\\\": \\\"...\\\",
                            \\\"runtime\\\": ...,
                            \\\"overview\\\": \\\"....\\\"}
+                           - Nội dung trả về dưới dạng json và phải đúng định dạng json
                            - Tên phim title nếu chỉ là tiếng việt thì ko có dấu \\\"(\\\" và dấu \\\")\\\".
                            - Tên phim có tiếng anh và tiếng việt thì theo format \\\"Tên tiếng anh (Tên Tiếng Việt) \\\".
                            - Trong đó overview: Nội dung giới thiệu tổng quát về nội dung phim có thể tóm tắt nội dung của phim (khoảng 30 chữ, câu văn phải mạch lạc).

@@ -22,10 +22,18 @@ public class ResponseToJsonUtil {
                 .getString("text");
         Pattern pattern = Pattern.compile("\\[(\\{.*?})\\]", Pattern.DOTALL);
         Matcher matcher = pattern.matcher(text);
-        int  lastOverviewIndex= text.lastIndexOf(", {'tit");
-        text=text.substring(0,lastOverviewIndex);
-        text+="]";
 
+        text = text.replace("<em>","");
+        text = text.replace("</em>","");
+        text = text.replace("/n", "");
+        if(text.charAt(text.length()-1)!=']'){
+            int  lastIndex1= text.lastIndexOf("{");
+            text=text.substring(0,lastIndex1);
+
+            int lastIndex2 = text.lastIndexOf(",");
+            text=text.substring(0,lastIndex2);
+            text+="]";
+        }
         // Thay nháy đơn thành nháy kép để JSON hợp lệ
         text = text.replace("'", "\"");
         text = text.replace("<em>","");
