@@ -44,7 +44,7 @@ public interface CollectionFilmRepository extends JpaRepository<CollectionFilmEn
                 "JOIN cf.collection c " +
                 "JOIN c.user u "+
                 "WHERE u.id = :userId " +
-                "AND cf.id= :filmId ")
+                "AND cf.film.id= :filmId ")
         List<Long> findAllByCollectionIdByFilmIdAndUserId(
                 @Param("filmId") Long filmId, @Param("userId") Long userId
         );

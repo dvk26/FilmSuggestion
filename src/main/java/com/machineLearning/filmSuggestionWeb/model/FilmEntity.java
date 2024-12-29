@@ -24,6 +24,7 @@ public class FilmEntity {
     private Long year;
     private Double imdbRating;
     private Long time;
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String overview;
     private Boolean isLiked;
     private Boolean isDisLiked;

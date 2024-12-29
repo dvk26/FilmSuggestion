@@ -44,10 +44,6 @@ public class CollectionFilmController {
     public ResponseEntity<String> createAndRemoveCollectionFilm(
             @RequestBody CreateAndRemoveCollectionFilmDTO createAndRemoveCollectionFilmDTO) {
         try {
-
-            if (createAndRemoveCollectionFilmDTO.getAddCollections().isEmpty())
-                return ResponseEntity.status(200).body("Tạo và Xóa thành công nhưng không có gì để làm");
-
             Boolean check = collectionFilmService.CreateAndRemoveCollectionFilm_By_CollectionId_FilmId(createAndRemoveCollectionFilmDTO);
             if (check == true) {
                 return ResponseEntity.status(200).body("Create and Remove Collection Film Successfully");

@@ -30,7 +30,7 @@ import java.util.Map;
 public class SearchServiceImpl implements SearchService {
 
 
-    String url ="https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyCpnE5YMWC3WATIS7gr3hSRyUwp80OVOJg";
+    String url ="https://generativelanguage.googleapis.com/v1beta/tunedModels/generate-recommend-film-v2:generateContent?key=AIzaSyCpnE5YMWC3WATIS7gr3hSRyUwp80OVOJg";
 
     private final ResponseToJsonUtil responseToJsonUtil;
     private final FilmService filmService;
@@ -69,14 +69,16 @@ public class SearchServiceImpl implements SearchService {
                     {
                       "parts": [
                         {
-                          "text": "Gợi ý khoảng 10 bộ phim, nếu có nhiều hơn, thì chọn ra 12-15 bộ có điểm số IMDB cao nhất.
+                          "text": "Gợi ý khoảng 8 bộ phim, nếu có nhiều hơn, thì chọn ra 10-12 bộ có điểm số IMDB cao nhất.
                            - Tên phim (title) - Ví dụ nếu chỉ có tiếng việt thôi thì có định dạng ko bao gồm dấu đóng mở ngoặc \\\"Tên tiếng việt\\\" hoặc nếu vừa có tên ngoại ngữ vừa có tiếng việt thì có định dạng \\\"Tên ngoại ngữ (Tên tiếng việt)\\\"    
                            - Những thể loại của phim (genres) - trả về một list
                            - Năm sản xuất (year) - trả về số nguyên
                            - Điểm số IMDB (imdb_rating) - trả về số thực dương
                            - Thời lượng phim (runtime): trả về số nguyên, đơn vị là phút 
                            - Tóm tắt nội dung của phim (overview): dễ tả mạch lạc và đầy đủ nội dung phim, không quá 1000 chữ.
+                           - Trả về dạng json đúng và mảng json trả về phải được đầy đủ.
                            - Nội dung trả về dưới dạng json
+                           - Không được sinh ra các từ chứa trong dấu \\" \\"
                            {\\\"title\\\": \\\"phim 1\\\",
                            \\\"genres\\\": [\\\"Kinh dị\\\", \\\"Viễn tưởng\\\", ...],
                            \\\"year\\\": 2020,
@@ -87,6 +89,7 @@ public class SearchServiceImpl implements SearchService {
                            - Tên phim có tiếng anh và tiếng việt thì theo format \\\"Tên tiếng anh (Tên Tiếng Việt) \\\".
                            - Trong đó overview: Nội dung giới thiệu tổng quát về nội dung phim có thể tóm tắt nội dung của phim (khoảng 30 chữ, câu văn phải mạch lạc).
                            - Đây là yêu cầu của người dùng: \\\"%s\\\""
+                           
                         }
                       ]
                     }
