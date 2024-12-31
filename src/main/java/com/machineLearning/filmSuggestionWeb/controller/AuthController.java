@@ -148,7 +148,7 @@ public class AuthController {
         return ResponseEntity
                 .ok()
                 .header(HttpHeaders.SET_COOKIE, deleteSpringCookie.toString())
-                .build();
+                .body("log out thanh cong");
     }
 
 }
