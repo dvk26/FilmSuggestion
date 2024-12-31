@@ -69,11 +69,11 @@ public class SearchServiceImpl implements SearchService {
                     {
                       "parts": [
                         {
-                          "text": "Gợi ý khoảng 7-9 bộ phim, nếu có nhiều hơn, thì chọn ra 10-12 bộ có điểm số IMDB cao nhất.
+                          "text": "Gợi ý khoảng 9 bộ phim, nếu có nhiều hơn, thì chọn ra 10-12 bộ có điểm số IMDB cao nhất.
                            - Tên phim (title) - Ví dụ nếu chỉ có tiếng việt thôi thì có định dạng ko bao gồm dấu đóng mở ngoặc \\\"Tên tiếng việt\\\" hoặc nếu vừa có tên ngoại ngữ vừa có tiếng việt thì có định dạng \\\"Tên ngoại ngữ (Tên tiếng việt)\\\"    
                            - Những thể loại của phim (genres) - trả về một list
                            - Năm sản xuất (year) - trả về số nguyên
-                           - Điểm số IMDB (imdb_rating) - trả về số thực dương
+                           - Điểm số IMDB (imdb_rating) - trả về số thực dương(không được trả về giá trị None nếu ko có có thể gán đại một số random.)
                            - Thời lượng phim (runtime): trả về số nguyên, đơn vị là phút 
                            - Tóm tắt nội dung của phim (overview): dễ tả mạch lạc và đầy đủ nội dung phim, không quá 1000 chữ.
                            - Trả về dạng json đúng và mảng json trả về phải được đầy đủ.
@@ -88,9 +88,10 @@ public class SearchServiceImpl implements SearchService {
                            - Nội dung trả về dưới dạng json và phải đúng định dạng json
                            - Tên phim title nếu chỉ là tiếng việt thì ko có dấu \\\"(\\\" và dấu \\\")\\\".
                            - Tên phim có tiếng anh và tiếng việt thì theo format \\\"Tên tiếng anh (Tên Tiếng Việt) \\\".
+                           - Không được trả về các kí tự như \\\" \\\"
+                           - Không được trả về các kí tự nằm trong dấu ngoặc đơn hoặc kép như \\\'Tí trạng\\\' hoặc \\\"Trang ti\\\"
                            - Trong đó overview: Nội dung giới thiệu tổng quát về nội dung phim có thể tóm tắt nội dung của phim (khoảng 30 chữ, câu văn phải mạch lạc).
                            - Đây là yêu cầu của người dùng: \\\"%s\\\""
-                           
                         }
                       ]
                     }
