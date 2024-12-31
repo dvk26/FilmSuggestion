@@ -69,7 +69,7 @@ public class SearchServiceImpl implements SearchService {
                     {
                       "parts": [
                         {
-                          "text": "Gợi ý khoảng 8 bộ phim, nếu  có nhiều hơn, thì chọn ra 10-12 bộ có điểm số IMDB cao nhất.
+                          "text": "Gợi ý khoảng 9 bộ phim, nếu  có nhiều hơn, thì chọn ra 10-12 bộ có điểm số IMDB cao nhất.
                            - Tên phim (title) - Ví dụ nếu chỉ có tiếng việt thôi thì có định dạng ko bao gồm dấu đóng mở ngoặc \\\"Tên tiếng việt\\\" hoặc nếu vừa có tên ngoại ngữ vừa có tiếng việt thì có định dạng \\\"Tên ngoại ngữ (Tên tiếng việt)\\\"    
                            - Những thể loại của phim (genres) - trả về một list
                            - Năm sản xuất (year) - trả về số nguyên
