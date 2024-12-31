@@ -20,33 +20,15 @@ public class ResponseToJsonUtil {
                 .getJSONArray("parts")
                 .getJSONObject(0)
                 .getString("text");
-        Pattern pattern = Pattern.compile("\\[(\\{.*?})\\]", Pattern.DOTALL);
+        Pattern pattern = Pattern.compile("```json\\n(\\[.*?\\])\\n```", Pattern.DOTALL);
         Matcher matcher = pattern.matcher(text);
-        int  lastOverviewIndex= text.lastIndexOf(", {'tit");
-        text=text.substring(0,lastOverviewIndex);
-        text+="]";
 
-        // Thay nháy đơn thành nháy kép để JSON hợp lệ
-        text = text.replace("'", "\"");
-        text = text.replace("<em>","");
-        text = text.replace("</em>","");
-        System.out.println(text);
-        // Kiểm tra xem chuỗi có phải là JSON hợp lệ hay không
-        try {
-            // Sử dụng ObjectMapper để chuyển đổi
-            ObjectMapper objectMapper = new ObjectMapper();
-
-            // Chuyển chuỗi thành JsonNode
-            JsonNode jsonArray = objectMapper.readTree(text);
-
-            // In kết quả
-            System.out.println("Mảng JSON hợp lệ:");
-            return jsonArray.toPrettyString();
-        } catch (Exception e) {
-            System.err.println("Lỗi khi chuyển đổi JSON: " + e.getMessage());
-            return null;
+        if (matcher.find()) {
+            String jsonArray = matcher.group(1);
+            return jsonArray;
+        } else {
+            System.out.println("No JSON array found.");
         }
-
-
+        return null;
     }
 }
