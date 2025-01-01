@@ -34,8 +34,6 @@ public class ResponseToJsonUtil {
             text=text.substring(0,lastIndex2);
             text+="]";
         }
-        // Thay nháy đơn thành nháy kép để JSON hợp lệ
-        text = text.replace("'", "\"");
         text = text.replace("<em>","");
         text = text.replace("</em>","");
         System.out.println(text);

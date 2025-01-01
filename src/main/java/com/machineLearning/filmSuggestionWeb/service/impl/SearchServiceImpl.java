@@ -80,7 +80,7 @@ public class SearchServiceImpl implements SearchService {
                            - Không được sinh ra các từ chứa trong dấu \\" \\"
                            
                            {\\\"title\\\": \\\"phim 1\\\",
-                           \\\"genres\\\": [\\\"Kinh dị\\\", \\\"Viễn tưởng\\\", ...],
+                           \\\"genres\\\": [\\\"Kinh dị\\\", \\\"Viễn tưởng\\\"],
                            \\\"year\\\": 2020,
                            \\\"imdb_rating\\\": \\\"...\\\",
                            \\\"runtime\\\": ...,
@@ -89,6 +89,7 @@ public class SearchServiceImpl implements SearchService {
                            - Tên phim title nếu chỉ là tiếng việt thì ko có dấu \\\"(\\\" và dấu \\\")\\\".
                            - Tên phim có tiếng anh và tiếng việt thì theo format \\\"Tên tiếng anh (Tên Tiếng Việt) \\\".
                            - Không được trả về các kí tự như \\\" \\\"
+                           - Trong mảng genres phía sau phần tử cuối cùng không được thêm dấu phẩy.
                            - Không được trả về các kí tự nằm trong dấu ngoặc đơn hoặc kép như \\\'Tí trạng\\\' hoặc \\\"Trang ti\\\"
                            - Trong đó overview: Nội dung giới thiệu tổng quát về nội dung phim có thể tóm tắt nội dung của phim (khoảng 30 chữ, câu văn phải mạch lạc).
                            - Đây là yêu cầu của người dùng: \\\"%s\\\""
