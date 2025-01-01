@@ -19,14 +19,14 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String fullName;
+//    private String fullName;
     private String userName;
     private String email;
     private String password;
-    @Enumerated(EnumType.STRING)
-    private GenderEnum gender;
-    private Long age;
-    private String address;
+//    @Enumerated(EnumType.STRING)
+//    private GenderEnum gender;
+//    private Long age;
+//    private String address;
     @Column(columnDefinition = "MEDIUMTEXT")
     private String refreshToken;
     private Instant createdAt;
