@@ -54,9 +54,9 @@ public class DatabaseInitialize implements CommandLineRunner {
             UserEntity adminUser = new UserEntity();
             adminUser.setUserName("admin");
             adminUser.setEmail("admin@gmail.com");
-            adminUser.setAddress("227 nguyen van cu, quan 5, tphcm");
-            adminUser.setAge(25L);
-            adminUser.setGender(GenderEnum.FEMALE);
+            // adminUser.setAddress("227 nguyen van cu, quan 5, tphcm");
+            // adminUser.setAge(25L);
+            // adminUser.setGender(GenderEnum.FEMALE);
             adminUser.setPassword(this.passwordEncoder.encode("123456"));
             adminUser.setRole(roleRepository.findByCode("ADMIN"));
             this.userRepository.save(adminUser);
