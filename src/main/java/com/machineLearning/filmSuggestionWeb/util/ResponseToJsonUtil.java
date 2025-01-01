@@ -36,6 +36,17 @@ public class ResponseToJsonUtil {
         }
         text = text.replace("<em>","");
         text = text.replace("</em>","");
+        int countSign = 0;
+        for (int i=0 ;i<text.length()-1;i++){
+            if(text.charAt(i)=='\''){
+                countSign++;
+            }
+        }
+        if(countSign>=10){
+            text = text.replace("\'","\"");
+        }
+
+
         System.out.println(text);
         // Kiểm tra xem chuỗi có phải là JSON hợp lệ hay không
         try {
