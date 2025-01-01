@@ -88,7 +88,7 @@ public class SearchServiceImpl implements SearchService {
                            - Nội dung trả về dưới dạng json và phải đúng định dạng json
                            - Tên phim title nếu chỉ là tiếng việt thì ko có dấu \\\"(\\\" và dấu \\\")\\\".
                            - Tên phim có tiếng anh và tiếng việt thì theo format \\\"Tên tiếng anh (Tên Tiếng Việt) \\\".
-                           - Không được trả về các kí tự như \\\" \\\"
+                           - Không được trả về các kí tự như \\\" và \\\\\\' trong overview và title.
                            - Trong mảng genres phía sau phần tử cuối cùng không được thêm dấu phẩy.
                            - Không được trả về các kí tự nằm trong dấu ngoặc đơn hoặc kép như \\\'Tí trạng\\\' hoặc \\\"Trang ti\\\"
                            - Trong đó overview: Nội dung giới thiệu tổng quát về nội dung phim có thể tóm tắt nội dung của phim (khoảng 30 chữ, câu văn phải mạch lạc).
