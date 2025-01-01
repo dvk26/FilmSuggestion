@@ -16,8 +16,8 @@ import jakarta.validation.constraints.NotBlank;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class UserDTO {
     private Long id;
-    @NotNull(message = "fullName ko thể bỏ trống!")
-    private String fullName;
+//    @NotNull(message = "fullName ko thể bỏ trống!")
+//    private String fullName;
     @NotNull(message = "userName ko thể bỏ trống!")
     private String userName;
     @NotNull(message = "email ko thể bỏ trống!")
@@ -25,8 +25,8 @@ public class UserDTO {
     private String email;
     @NotNull
     private String password;
-    @Enumerated(EnumType.STRING)
-    private GenderEnum gender;
+//    @Enumerated(EnumType.STRING)
+//    private GenderEnum gender;
     private Long age;
     private String address;
     private String roleCode;
