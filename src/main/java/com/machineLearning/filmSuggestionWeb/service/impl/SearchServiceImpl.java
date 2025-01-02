@@ -80,7 +80,7 @@ public class SearchServiceImpl implements SearchService {
                            - Không được sinh ra các từ chứa trong dấu \\" \\"
                            
                            {\\\"title\\\": \\\"phim 1\\\",
-                           \\\"genres\\\": [\\\"Kinh dị\\\", \\\"Viễn tưởng\\\"],
+                           \\"genres\\": [\\"Kinh dị\\", \\"Viễn tưởng\\" ](genres chỉ nên là tiếng Việt),
                            \\\"year\\\": 2020,
                            \\\"imdb_rating\\\": \\\"...\\\",
                            \\\"runtime\\\": ...,
