@@ -42,7 +42,7 @@ public class ResponseToJsonUtil {
                 countSign++;
             }
         }
-        if(countSign>=10){
+        if(countSign>=10  ){
             text = text.replace("\'","\"");
         }
 
